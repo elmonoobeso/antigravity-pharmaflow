@@ -1,0 +1,13 @@
+# Comprobacion rapida antes de dar por cerrado cualquier cambio:
+#   py -3.14 -m ruff check .
+#
+# F821 (nombre no definido) es la regla que habria detectado en segundos los
+# crashes que dejo el refactor a modulos. Es la razon principal de este archivo.
+
+target-version = "py314"
+line-length = 140
+exclude = ["app (5).py", "extract_tabs_and_charts.py", "append_business.py", "cold.py"]
+
+[lint]
+select = ["F", "E9"]
+ignore = ["F403", "F405"]  # 'import *' pendiente de eliminar en Fase 3

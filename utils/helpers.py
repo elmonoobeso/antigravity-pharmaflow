@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 
 def inject_custom_css():
     st.markdown("""

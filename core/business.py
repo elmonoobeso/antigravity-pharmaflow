@@ -10,7 +10,6 @@ from config.settings import (
     HEALTH_SCORE_MESES_DEFAULT, BASE_DIR, COL_CN, COL_STOCK, COL_NOMBRE, COL_PVL,
     COL_VENTAS, COL_FECHA, COL_MOLECULA, COL_LAB
 )
-from utils.helpers import safe_div
 
 def heuristica_tipo_producto(cn, molecula=""):
     """Clasifica como Medicamento o Parafarmacia evaluando C.N., EAN y la familia."""

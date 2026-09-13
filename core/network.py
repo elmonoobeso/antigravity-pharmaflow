@@ -1,7 +1,6 @@
 import json
 from datetime import datetime, date, timedelta
 import pandas as pd
-import numpy as np
 from config.settings import BASE_DIR, COL_CN, COL_LAB, COL_NOMBRE, COL_PVL, COL_MOLECULA
 from data.io import ruta_farmacia_activa
 from core.business import aplicar_ofertas_indexado, construir_indice_ofertas, buscar_oferta_por_indice

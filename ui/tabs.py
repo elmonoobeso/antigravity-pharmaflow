@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 from datetime import date, datetime, timedelta
 from config.settings import COL_CN, COL_LAB, COL_NOMBRE, COL_STOCK, COL_PVL, COL_MOLECULA, COL_FECHA, COL_VENTAS, HEALTH_SCORE_MESES_DEFAULT, COLORS
 from data.io import obtener_farmacias_disponibles, crear_farmacia, ruta_farmacia_activa, guardar_dataframe_farmacia, cargar_json_farmacia
@@ -11,7 +10,7 @@ from ml.engine import (ML_AVAILABLE, entrenar_modelo_ml, guardar_modelo_farmacia
                        build_features, cold_start_proxy, obtener_modelo_cacheado,
                        invalidar_cache_modelo, necesita_reentrenamiento,
                        generar_pedido_ml, generar_pedido_ensemble)
-from ui.components import render_header, render_kpi
+from ui.components import render_kpi
 from ui.charts import *
 from utils.pdf_generator import generar_informe_pdf
 from utils.network import ejecutar_benchmark_red
@@ -24,7 +23,7 @@ def modulo_selector_farmacia():
         if farmacias:
             seleccion = st.selectbox("Farmacias disponibles:", ["-- Selecciona --"] + farmacias, key="sel_farmacia")
             if seleccion != "-- Selecciona --":
-                if st.button("\u2705 Abrir Farmacia", type="primary", use_container_width=True):
+                if st.button("\u2705 Abrir Farmacia", type="primary", width='stretch'):
                     st.session_state["farmacia_activa"] = seleccion
                     for k in ["inventario","historico","ofertas_normalizadas","ventas_media_cache",
                               "historico_hash","pedido_generado","modelo_ml_cache","ofertas_raw",
@@ -36,7 +35,7 @@ def modulo_selector_farmacia():
     with col_new:
         st.markdown("**Crear nueva:**")
         nn = st.text_input("Nombre:", key="nueva_farmacia", placeholder="Ej: Farmacia Lopez")
-        if st.button("\U0001f4be Crear", use_container_width=True) and nn.strip():
+        if st.button("\U0001f4be Crear", width='stretch') and nn.strip():
             nl = crear_farmacia(nn)
             st.session_state["farmacia_activa"] = nl
             st.rerun()
@@ -99,7 +98,7 @@ def modulo_configuracion():
         except Exception as e: st.error(f"Error: {e}")
     df_of_raw = st.session_state.get("ofertas_raw")
     if df_of_raw is not None and not df_of_raw.empty:
-        st.dataframe(df_of_raw.head(5), use_container_width=True, hide_index=True)
+        st.dataframe(df_of_raw.head(5), width='stretch', hide_index=True)
         cols_d = list(df_of_raw.columns); na = "-- No aplica --"; opts = [na] + cols_d
         mn = st.selectbox("Columna Nombre/Molecula:", opts, key="of_mn")
         st.markdown("**Tramos:**")
@@ -126,7 +125,7 @@ def modulo_configuracion():
     st.caption("Formato: Molecula,Dosis,Cantidad. Sin reglas = optimizacion libre.")
     reglas = cargar_reglas_surtido()
     df_reg = pd.DataFrame(reglas) if reglas else pd.DataFrame(columns=["presentacion","min_labs","labs_obligatorios"])
-    df_reg_e = st.data_editor(df_reg, num_rows="dynamic", use_container_width=True, key="ed_reg")
+    df_reg_e = st.data_editor(df_reg, num_rows="dynamic", width='stretch', key="ed_reg")
     if st.button("\U0001f4be Guardar Reglas Surtido"):
         guardar_reglas_surtido(df_reg_e.dropna(subset=["presentacion"]).to_dict("records"))
         st.success("\u2705 Guardadas.")
@@ -151,7 +150,7 @@ def modulo_configuracion():
 
     prot = cargar_productos_protegidos()
     df_pr = pd.DataFrame(prot) if prot else pd.DataFrame(columns=["codigo_nacional","nombre","stock_minimo","motivo"])
-    df_pr_e = st.data_editor(df_pr, num_rows="dynamic", use_container_width=True, key="ed_prot")
+    df_pr_e = st.data_editor(df_pr, num_rows="dynamic", width='stretch', key="ed_prot")
     if st.button("\U0001f4be Guardar Protegidos"):
         guardar_productos_protegidos(df_pr_e.dropna(subset=["codigo_nacional"]).to_dict("records"))
         st.success("\u2705 Guardados.")
@@ -308,7 +307,7 @@ def modulo_configuracion():
             st.info("No hay modelo entrenado para esta farmacia.")
 
         if "inventario" in st.session_state and "historico" in st.session_state:
-            if st.button("\U0001f9e0 Entrenar Modelo ML", type="primary", use_container_width=True):
+            if st.button("\U0001f9e0 Entrenar Modelo ML", type="primary", width='stretch'):
                 with st.spinner("Entrenando modelo..."):
                     df_hist_imp = imputar_stockouts(st.session_state["historico"], st.session_state["inventario"])
                     perfil_f = cargar_perfil_farmacia()
@@ -322,7 +321,7 @@ def modulo_configuracion():
                         invalidar_cache_modelo()
                         st.success(f"\u2705 Modelo entrenado | RMSE: {metricas['rmse']} | R\u00b2: {metricas['r2']}")
                         fig_imp = grafico_importancia_features(metricas)
-                        if fig_imp: st.plotly_chart(fig_imp, use_container_width=True)
+                        if fig_imp: st.plotly_chart(fig_imp, width='stretch')
                     else:
                         st.error(f"Error: {metricas.get('error','Desconocido')}")
 
@@ -410,7 +409,7 @@ def modulo_business_intelligence():
     # === 2. Gauge HS + Benchmark + Evolucion proyectada ===
     cg, ce = st.columns([1, 2])
     with cg:
-        st.plotly_chart(grafico_gauge_health(hs), use_container_width=True, config={"displayModeBar":False})
+        st.plotly_chart(grafico_gauge_health(hs), width='stretch', config={"displayModeBar":False})
         if benchmark.get("media_red") is not None:
             diff = hs - benchmark["media_red"]
             color = "green" if diff >= 0 else "red"
@@ -425,7 +424,7 @@ def modulo_business_intelligence():
     with ce:
         fig_cal = grafico_calendario_reposicion(df_inv, df_vm)
         if fig_cal:
-            st.plotly_chart(fig_cal, use_container_width=True, config={"displayModeBar":False})
+            st.plotly_chart(fig_cal, width='stretch', config={"displayModeBar":False})
         else:
             st.info("Sin datos de ventas para calcular calendario de reposicion.")
 
@@ -435,7 +434,7 @@ def modulo_business_intelligence():
     with c_dr:
         fig_dr = grafico_dinero_en_riesgo_donut(dz, 0, coste_op)
         if fig_dr:
-            st.plotly_chart(fig_dr, use_container_width=True, config={"displayModeBar":False})
+            st.plotly_chart(fig_dr, width='stretch', config={"displayModeBar":False})
         else:
             st.success("\u2705 Sin dinero en riesgo")
     with c_top:
@@ -446,7 +445,7 @@ def modulo_business_intelligence():
             df_peor = df_rotacion[df_rotacion["Rotacion"] < 0.3].head(10)
             if not df_peor.empty:
                 cols_show = [c for c in [COL_NOMBRE, COL_STOCK, "Venta_Media_Mensual", "Rotacion"] if c in df_peor.columns]
-                st.dataframe(df_peor[cols_show], hide_index=True, use_container_width=True)
+                st.dataframe(df_peor[cols_show], hide_index=True, width='stretch')
             else:
                 st.success("\u2705 Todos los productos con buena rotacion")
         else:
@@ -458,7 +457,7 @@ def modulo_business_intelligence():
         st.markdown("---"); st.markdown("#### \U0001f4b6 Ahorro Generado por Pedido")
         fig_wf = grafico_waterfall_ahorro(pedidos_hist)
         if fig_wf:
-            st.plotly_chart(fig_wf, use_container_width=True, config={"displayModeBar":False})
+            st.plotly_chart(fig_wf, width='stretch', config={"displayModeBar":False})
         ahorro_total = sum(p.get("ahorro_ofertas", 0) for p in pedidos_hist)
         coste_total = sum(p.get("coste_total", 0) for p in pedidos_hist)
         c1, c2, c3 = st.columns(3)
@@ -473,9 +472,9 @@ def modulo_business_intelligence():
         fh, fzr = grafico_historico_kpi(df_hk)
         c1, c2 = st.columns(2)
         with c1:
-            if fh: st.plotly_chart(fh, use_container_width=True, config={"displayModeBar":False})
+            if fh: st.plotly_chart(fh, width='stretch', config={"displayModeBar":False})
         with c2:
-            if fzr: st.plotly_chart(fzr, use_container_width=True, config={"displayModeBar":False})
+            if fzr: st.plotly_chart(fzr, width='stretch', config={"displayModeBar":False})
         mejora = df_hk.iloc[-1]["health_score"] - df_hk.iloc[0]["health_score"]
         mejora_z = df_hk.iloc[0].get("n_zombies", 0) - df_hk.iloc[-1].get("n_zombies", 0)
         c1,c2,c3 = st.columns(3)
@@ -491,13 +490,13 @@ def modulo_business_intelligence():
     if not df_roi.empty:
         fig_roi = grafico_roi_laboratorios(df_roi)
         if fig_roi:
-            st.plotly_chart(fig_roi, use_container_width=True, config={"displayModeBar":False})
+            st.plotly_chart(fig_roi, width='stretch', config={"displayModeBar":False})
         with st.expander("Ver tabla completa de ROI"):
             df_roi_show = df_roi.copy()
             df_roi_show["Stock_EUR"] = df_roi_show["Stock_EUR"].apply(lambda x: f"{x:,.2f} \u20ac")
             df_roi_show["Venta_Anual_EUR"] = df_roi_show["Venta_Anual_EUR"].apply(lambda x: f"{x:,.2f} \u20ac")
             df_roi_show["ROI"] = df_roi_show["ROI"].apply(lambda x: f"{x:.2f}x")
-            st.dataframe(df_roi_show, use_container_width=True, hide_index=True)
+            st.dataframe(df_roi_show, width='stretch', hide_index=True)
 
     # === 7. Rotacion de Stock + Coste de Oportunidad ===
     st.markdown("---"); st.markdown("#### \U0001f504 Rotacion de Stock")
@@ -520,7 +519,7 @@ def modulo_business_intelligence():
             with st.expander("Ver ranking completo"):
                 cols_show = [c for c in [COL_CN, COL_NOMBRE, COL_LAB, COL_STOCK, "Venta_Media_Mensual",
                              "Rotacion", "Meses_Stock", "Estado"] if c in df_rot_show.columns]
-                st.dataframe(df_rot_show[cols_show].head(30), use_container_width=True, hide_index=True)
+                st.dataframe(df_rot_show[cols_show].head(30), width='stretch', hide_index=True)
         else:
             st.info("Sin datos de rotacion.")
     with c_co:
@@ -529,7 +528,7 @@ def modulo_business_intelligence():
             st.metric("Venta perdida estimada", f"{coste_op:,.2f} \u20ac/mes")
             if not df_coste_op.empty:
                 with st.expander(f"Ver {len(df_coste_op)} productos en rotura"):
-                    st.dataframe(df_coste_op.head(20), use_container_width=True, hide_index=True)
+                    st.dataframe(df_coste_op.head(20), width='stretch', hide_index=True)
         else:
             st.success("\u2705 Sin roturas — no hay venta perdida")
 
@@ -540,14 +539,14 @@ def modulo_business_intelligence():
         st.markdown(f"**Zombie (12m sin ventas)** — {len(df_z)} prods | {format_eur(dz)}")
         if not df_z.empty:
             cs = [c for c in [COL_CN,COL_NOMBRE,COL_LAB,COL_STOCK,COL_PVL,"Valor_Inmovilizado"] if c in df_z.columns]
-            st.dataframe(df_z[cs].sort_values("Valor_Inmovilizado",ascending=False).head(20), use_container_width=True, hide_index=True)
+            st.dataframe(df_z[cs].sort_values("Valor_Inmovilizado",ascending=False).head(20), width='stretch', hide_index=True)
         else:
             st.success("\u2705 Sin stock zombie")
     with c_u:
         st.markdown(f"**UVI (6m sin ventas)** — {len(df_uvi)} prods | {format_eur(duvi)}")
         if not df_uvi.empty:
             cs = [c for c in [COL_CN,COL_NOMBRE,COL_LAB,COL_STOCK,COL_PVL,"Valor_Inmovilizado"] if c in df_uvi.columns]
-            st.dataframe(df_uvi[cs].sort_values("Valor_Inmovilizado",ascending=False).head(20), use_container_width=True, hide_index=True)
+            st.dataframe(df_uvi[cs].sort_values("Valor_Inmovilizado",ascending=False).head(20), width='stretch', hide_index=True)
         else:
             st.success("\u2705 Sin stock UVI")
 
@@ -560,7 +559,7 @@ def modulo_business_intelligence():
         with c2: render_kpi("R\u00b2 Score", str(met.get("r2","?")))
         with c3: render_kpi("Features", str(len(met.get("features",[]))))
         fig_imp = grafico_importancia_features(met)
-        if fig_imp: st.plotly_chart(fig_imp, use_container_width=True, config={"displayModeBar":False})
+        if fig_imp: st.plotly_chart(fig_imp, width='stretch', config={"displayModeBar":False})
 
     # === 10. Descargar Informe ===
     st.markdown("---")
@@ -643,7 +642,7 @@ def modulo_generador_pedidos():
 
     # --- Generar ---
     st.markdown("---")
-    if st.button("\u26a1 Generar Pedido", type="primary", use_container_width=True):
+    if st.button("\u26a1 Generar Pedido", type="primary", width='stretch'):
         with st.spinner("Calculando..."):
             df_f = df_inv.copy()
             if lab_sel != "-- Todos --" and COL_LAB in df_f.columns:
@@ -747,7 +746,7 @@ def modulo_generador_pedidos():
                     dd["Safety_Stock"] = dd["Safety_Stock"].round(0).astype(int)
                 if "Upselling" in dd.columns:
                     dd["Upselling"] = dd["Upselling"].map({True: "\U0001f7e2 Si", False: ""})
-                st.dataframe(dd, use_container_width=True, hide_index=True)
+                st.dataframe(dd, width='stretch', hide_index=True)
 
         st.markdown("---")
         lab_txt = lab_sel if lab_sel != "-- Todos --" else "Todos"
@@ -758,9 +757,9 @@ def modulo_generador_pedidos():
                 data=exportar_pedido_excel(df_ped),
                 file_name=f"PharmaSmart_{lab_txt}_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                type="primary", use_container_width=True)
+                type="primary", width='stretch')
         with col_confirm:
-            if st.button("\u2705 Confirmar Pedido", use_container_width=True, type="secondary"):
+            if st.button("\u2705 Confirmar Pedido", width='stretch', type="secondary"):
                 modo_conf = "presupuesto" if "Presupuesto" in modo else "cobertura"
                 df_vm_conf = obtener_ventas_media(meses_cobertura=meses)
                 registrar_promociones_pedido(df_ped)
@@ -863,7 +862,7 @@ def modulo_generador_pedidos():
                 else: render_kpi("ℹ️ Reglas Activas", "0")
 
             with st.expander(f"Ver tabla de surtido ({n_moleculas} registros)"):
-                st.dataframe(df_surt_filtered.rename(columns={"Presentacion/Molecula": "Regla / Molécula"}), use_container_width=True, hide_index=True)
+                st.dataframe(df_surt_filtered.rename(columns={"Presentacion/Molecula": "Regla / Molécula"}), width='stretch', hide_index=True)
         else:
             st.info("Carga inventario para ver el panel de surtido.")
     else:
@@ -889,8 +888,7 @@ def modulo_auditoria():
     dz = df_z["Valor_Inmovilizado"].sum() if not df_z.empty and "Valor_Inmovilizado" in df_z.columns else 0
     df_u = calcular_stock_uvi(df_inv, df_hist)
     du = df_u["Valor_Inmovilizado"].sum() if not df_u.empty and "Valor_Inmovilizado" in df_u.columns else 0
-    df_rot = calcular_roturas(df_inv, df_vm)
-    
+
     c_op, _ = calcular_coste_oportunidad(df_inv, df_vm)
     
     # Nuevas variables
@@ -902,7 +900,7 @@ def modulo_auditoria():
     st.markdown("#### \U0001f4cb Resumen Ejecutivo")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.plotly_chart(grafico_gauge_health(hs), use_container_width=True, config={"displayModeBar":False}, key="gauge_auditoria")
+        st.plotly_chart(grafico_gauge_health(hs), width='stretch', config={"displayModeBar":False}, key="gauge_auditoria")
     with c2:
         render_kpi("Índice Servicio (Fill Rate)", f"{fill_rate:.1f}%", f"{n_roturas_hab} roturas / {total_con_demanda} actvs", fill_rate>90)
         st.markdown("<br>", unsafe_allow_html=True)
@@ -918,7 +916,7 @@ def modulo_auditoria():
         fig_donut = grafico_dinero_en_riesgo_donut(dz, val_sob, c_op)
         if fig_donut:
             fig_donut.update_layout(height=180, margin=dict(t=0, b=0, l=0, r=0))
-            st.plotly_chart(fig_donut, use_container_width=True, config={"displayModeBar":False}, key="donut_auditoria")
+            st.plotly_chart(fig_donut, width='stretch', config={"displayModeBar":False}, key="donut_auditoria")
     with c4:
         # Comparativa temporal rapida
         hist_aud = obtener_historico_auditorias()
@@ -945,19 +943,19 @@ def modulo_auditoria():
         with c_l:
             st.markdown("**Análisis de Pareto (Regla 80/20)**")
             fig_tail = grafico_long_tail(df_inv, df_vm)
-            if fig_tail: st.plotly_chart(fig_tail, use_container_width=True, config={"displayModeBar":False}, key="tail_auditoria")
+            if fig_tail: st.plotly_chart(fig_tail, width='stretch', config={"displayModeBar":False}, key="tail_auditoria")
             
         with c_r:
             st.markdown("**Inversión por Laboratorio**")
             tipo_filtro = st.radio("Filtro:", ["Todos", "Medicamento", "Parafarmacia"], horizontal=True)
             fig_labs = grafico_distribucion_laboratorios(df_inv, tipo_filtro)
-            if fig_labs: st.plotly_chart(fig_labs, use_container_width=True, config={"displayModeBar":False}, key="labs_auditoria")
+            if fig_labs: st.plotly_chart(fig_labs, width='stretch', config={"displayModeBar":False}, key="labs_auditoria")
             
         st.markdown("#### Análisis ABC (Valor de Inmovilizado)")
         df_abc = calcular_analisis_abc(df_inv, df_vm)
         if not df_abc.empty:
             df_abc_show = df_abc[[COL_NOMBRE, COL_LAB, COL_STOCK, "Valor_Stock", "Clasificacion_ABC", "Venta_Media_Mensual"]].head(25)
-            st.dataframe(df_abc_show, use_container_width=True, hide_index=True)
+            st.dataframe(df_abc_show, width='stretch', hide_index=True)
 
     with ta2:
         st.markdown("#### \u26a0\ufe0f Riesgo Operacional (Inmovilizado)")
@@ -965,23 +963,23 @@ def modulo_auditoria():
         with c_z:
             st.markdown(f"**\U0001f9df Stock Zombie (12m sin ventas)** — {format_eur(dz)}")
             if not df_z.empty:
-                st.dataframe(df_z[[COL_NOMBRE, COL_LAB, COL_STOCK, "Valor_Inmovilizado"]].sort_values("Valor_Inmovilizado", ascending=False).head(15), use_container_width=True, hide_index=True)
+                st.dataframe(df_z[[COL_NOMBRE, COL_LAB, COL_STOCK, "Valor_Inmovilizado"]].sort_values("Valor_Inmovilizado", ascending=False).head(15), width='stretch', hide_index=True)
             else: st.success("Sin zombies")
         with c_u:
             st.markdown(f"**\U0001fa79 Stock UVI (6m sin ventas)** — {format_eur(du)}")
             if not df_u.empty:
-                st.dataframe(df_u[[COL_NOMBRE, COL_LAB, COL_STOCK, "Valor_Inmovilizado"]].sort_values("Valor_Inmovilizado", ascending=False).head(15), use_container_width=True, hide_index=True)
+                st.dataframe(df_u[[COL_NOMBRE, COL_LAB, COL_STOCK, "Valor_Inmovilizado"]].sort_values("Valor_Inmovilizado", ascending=False).head(15), width='stretch', hide_index=True)
             else: st.success("Sin UVI")
             
         st.markdown("---")
         c_hc, c_cr = st.columns([1.5, 1])
         with c_hc:
             fig_heat = grafico_heatmap_cobertura(df_inv, df_vm)
-            if fig_heat: st.plotly_chart(fig_heat, use_container_width=True, config={"displayModeBar":False}, key="heat_auditoria")
+            if fig_heat: st.plotly_chart(fig_heat, width='stretch', config={"displayModeBar":False}, key="heat_auditoria")
         with c_cr:
             df_exceso = df_m[df_m["Exceso"] > 0]
             fig_conc = grafico_concentracion_riesgo(df_z, df_u, df_exceso)
-            if fig_conc: st.plotly_chart(fig_conc, use_container_width=True, config={"displayModeBar":False}, key="conc_auditoria")
+            if fig_conc: st.plotly_chart(fig_conc, width='stretch', config={"displayModeBar":False}, key="conc_auditoria")
             
     with ta3:
         st.markdown("#### \U0001f4b8 Flujo de Caja y Estacionalidad")
@@ -1016,7 +1014,7 @@ def modulo_auditoria():
             df_gmroi, tiene_pvp = calcular_matriz_rentabilidad_gmroi(df_inv, df_vm)
             if tiene_pvp and not df_gmroi.empty:
                 res = df_gmroi.groupby("Cuadrante")[COL_CN].count().reset_index()
-                st.dataframe(res, use_container_width=True, hide_index=True)
+                st.dataframe(res, width='stretch', hide_index=True)
             else:
                 st.info("Se requiere columna PVP para calcular matriz real.")
                 
@@ -1025,7 +1023,7 @@ def modulo_auditoria():
             df_est = calcular_dependencia_estacional(df_hist)
             if not df_est.empty:
                 fig_est = grafico_estacionalidad_liquidez(df_est)
-                if fig_est: st.plotly_chart(fig_est, use_container_width=True, config={"displayModeBar":False}, key="est_auditoria")
+                if fig_est: st.plotly_chart(fig_est, width='stretch', config={"displayModeBar":False}, key="est_auditoria")
                 
                 # Alerta si un trimestre acumula > 40% ventas
                 max_3m = df_est["Pct_Ventas"].rolling(window=3, min_periods=1).sum().max()
@@ -1058,7 +1056,7 @@ def modulo_auditoria():
                     st.markdown("**Lista de Descuadres:**")
                     df_muest = df_conc[df_conc["Descuadre_Uds"] != 0].copy()
                     df_muest["Stock_Teorico"] = df_muest[COL_STOCK]
-                    st.dataframe(df_muest[[COL_NOMBRE, "Stock_Teorico", "Stock_Fisico", "Descuadre_Uds", "Descuadre_Eur"]].sort_values("Descuadre_Eur"), use_container_width=True, hide_index=True)
+                    st.dataframe(df_muest[[COL_NOMBRE, "Stock_Teorico", "Stock_Fisico", "Descuadre_Uds", "Descuadre_Eur"]].sort_values("Descuadre_Eur"), width='stretch', hide_index=True)
                 else:
                     st.error("No se pudieron detectar las columnas correctas en el CSV subido.")
             except Exception as e:
@@ -1202,7 +1200,7 @@ def modulo_torre_control():
             barmode="overlay",
             margin=dict(l=150, r=30, t=50, b=40),
         )
-        st.plotly_chart(fig_gantt, use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(fig_gantt, width='stretch', config={"displayModeBar": False})
 
     # --- 4. Oportunidades de Compra Conjunta ---
     st.markdown("---")
@@ -1256,7 +1254,7 @@ def modulo_torre_control():
                         df_comp["Farmacia"] = df_comp["Farmacia"].str.replace("_", " ").str.title()
 
                         # Highlight ahorro
-                        st.dataframe(df_comp, use_container_width=True, hide_index=True)
+                        st.dataframe(df_comp, width='stretch', hide_index=True)
 
                         c1, c2, c3 = st.columns(3)
                         with c1:
@@ -1289,13 +1287,13 @@ def modulo_torre_control():
                         # Botones
                         col_exec, col_lost = st.columns(2)
                         with col_exec:
-                            if st.button(f"\u2705 Marcar Ejecutada", key=f"exec_{idx}"):
+                            if st.button("\u2705 Marcar Ejecutada", key=f"exec_{idx}"):
                                 registrar_compra_conjunta(
                                     farms, lab_filtro, sim["ahorro_total"], sim["resumen_farmacias"])
                                 st.success("\u2705 Compra conjunta registrada.")
                                 st.rerun()
                         with col_lost:
-                            if st.button(f"\u274c No Ejecutada", key=f"lost_{idx}"):
+                            if st.button("\u274c No Ejecutada", key=f"lost_{idx}"):
                                 for r in sim["resumen_farmacias"]:
                                     registrar_ahorro_perdido(
                                         r["farmacia"], r["ahorro"], lab_filtro,
@@ -1335,7 +1333,7 @@ def modulo_torre_control():
                 "Farmacias": farms_txt,
                 "Ahorro Total": format_eur(h["ahorro_total"]),
             })
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(rows), width='stretch', hide_index=True)
     else:
         st.info("No hay compras conjuntas registradas aun.")
 

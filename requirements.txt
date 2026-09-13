@@ -1,0 +1,23 @@
+# PharmaSmart — dependencias verificadas sobre Python 3.14 (Windows)
+# Instalacion:  py -3.14 -m pip install -r requirements.txt
+# Arranque:     py -3.14 -m streamlit run app.py
+
+streamlit==1.54.0
+pandas==2.3.3
+numpy==2.4.2
+python-dateutil==2.9.0.post0
+plotly==6.5.2
+
+# Motor ML: sin estos tres, ML_AVAILABLE queda en False y la app
+# funciona solo con el motor heuristico.
+xgboost==3.2.0
+scikit-learn==1.8.0
+joblib==1.5.3
+
+# Persistencia de datos de farmacia (parquet) y lectura/escritura de Excel
+pyarrow==23.0.0
+openpyxl==3.1.5
+XlsxWriter==3.2.9
+
+# Informe PDF
+fpdf2==2.8.7

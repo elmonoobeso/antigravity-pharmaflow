@@ -5,7 +5,6 @@ import plotly.graph_objects as go
 from datetime import timedelta, date
 from io import BytesIO
 from config.settings import COLORS, COL_CN, COL_LAB, COL_NOMBRE, COL_STOCK, COL_PVL, COL_MOLECULA
-from utils.helpers import format_eur, safe_div
 from core.business import heuristica_tipo_producto
 
 def exportar_pedido_excel(df_pedido):

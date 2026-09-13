@@ -1,4 +1,5 @@
 import json
+import os
 import streamlit as st
 import pandas as pd
 from config.settings import BASE_DIR
@@ -38,8 +39,14 @@ def guardar_json_farmacia(nombre_archivo, data):
     if ruta is None:
         return
     filepath = ruta / nombre_archivo
-    with open(filepath, "w", encoding="utf-8") as f:
+    # Escritura atomica: si el proceso muere a mitad, el archivo original
+    # queda intacto en vez de corrompido a medio escribir.
+    tmp = filepath.with_suffix(filepath.suffix + ".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, filepath)
 
 def guardar_dataframe_farmacia(nombre_archivo, df):
     """Guarda un DataFrame como Parquet en la carpeta de la farmacia activa."""
@@ -48,7 +55,9 @@ def guardar_dataframe_farmacia(nombre_archivo, df):
         return
     filepath = ruta / nombre_archivo
     try:
-        df.to_parquet(filepath, index=False, engine="pyarrow")
+        tmp = filepath.with_suffix(filepath.suffix + ".tmp")
+        df.to_parquet(tmp, index=False, engine="pyarrow")
+        os.replace(tmp, filepath)
     except ImportError:
         # Fallback a CSV si pyarrow no esta instalado
         filepath_csv = filepath.with_suffix(".csv")
