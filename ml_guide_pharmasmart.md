@@ -1,4 +1,4 @@
-# 🧠 Guía Completa de Machine Learning para PharmaFlow
+# 🧠 Guía Completa de Machine Learning para PharmaSmart
 ### *Manual del Arquitecto — Del concepto al modelo en producción*
 
 ---
@@ -46,7 +46,7 @@ Machine Learning:
   datos + respuestas → reglas (el modelo)
 ```
 
-**En PharmaFlow:** No escribimos "si es diciembre y hay gripe → pide más antigripales". En su lugar, le damos 3 años de datos de ventas con sus fechas, y el modelo aprende él solo que en diciembre suben ciertas referencias.
+**En PharmaSmart:** No escribimos "si es diciembre y hay gripe → pide más antigripales". En su lugar, le damos 3 años de datos de ventas con sus fechas, y el modelo aprende él solo que en diciembre suben ciertas referencias.
 
 **Lo que esto implica para ti como arquitecto:**
 - El modelo es tan bueno como los datos que le das. Basura entra → basura sale.
@@ -62,20 +62,20 @@ Machine Learning:
 
 ### 2. Tipos de Machine Learning
 
-**Aprendizaje Supervisado** — El que usamos en PharmaFlow
+**Aprendizaje Supervisado** — El que usamos en PharmaSmart
 
 El modelo aprende de ejemplos donde conocemos la respuesta correcta.
 
 - Ejemplo: Le damos ventas históricas (la pregunta) y el modelo aprende a predecir ventas futuras (la respuesta).
 - Dos subtipos: **Regresión** (predecir un número → cuántas unidades) y **Clasificación** (predecir una categoría → ¿habrá rotura de stock? sí/no).
-- En PharmaFlow usaremos ambos: regresión para unidades, clasificación para alertas de rotura.
+- En PharmaSmart usaremos ambos: regresión para unidades, clasificación para alertas de rotura.
 
 **Aprendizaje No Supervisado** — El motor de la Fase 2 (Auditoría)
 
 El modelo encuentra patrones y agrupaciones naturales en los datos sin que tú le des "respuestas correctas" previas. No predecimos un valor, descubrimos una estructura oculta.
 
 - Ejemplo: Le damos los datos de 50 farmacias (ventas, tamaño, ubicación) y el modelo las separa en 4 grupos ("clústeres") de comportamiento similar.
-- Utilidad en PharmaFlow (Fase 2): Encontrar la "Farmacia Gemela" para comparar rendimiento, o identificar qué "Tipo de Farmacia" (Barrio, Turística, Paso) es la que estamos auditando para valorar si su precio de compra es justo.
+- Utilidad en PharmaSmart (Fase 2): Encontrar la "Farmacia Gemela" para comparar rendimiento, o identificar qué "Tipo de Farmacia" (Barrio, Turística, Paso) es la que estamos auditando para valorar si su precio de compra es justo.
 - Riesgo: Los grupos que encuentra la matemática pueden no tener un sentido de negocio evidente. Siempre requiere interpretación humana posterior para "bautizar" cada clúster.
 
 **Aprendizaje por Refuerzo** — No aplicable aquí
@@ -90,7 +90,7 @@ El modelo aprende por ensayo y error, recibiendo premios y penalizaciones. Útil
 - **Label** = lo que queremos predecir. Es el *efecto*.
 - **Instancia / muestra** = una fila de datos. Ejemplo: las ventas de Ibuprofeno 400mg en marzo de 2024.
 
-**Ejemplo completo en PharmaFlow:**
+**Ejemplo completo en PharmaSmart:**
 
 | Feature | Tipo | Por qué podría ser útil |
 |---------|------|------------------------|
@@ -153,7 +153,7 @@ En Series temporales NO se puede hacer un split aleatorio. El tiempo tiene direc
 | Predicción con estacionalidad anual | 3 años |
 | Productos con mucha variabilidad | 4+ años |
 
-**Horizonte de predicción:** ¿Cuántos meses adelante predecimos? Para PharmaFlow lo ideal es:
+**Horizonte de predicción:** ¿Cuántos meses adelante predecimos? Para PharmaSmart lo ideal es:
 - **1 mes vista:** para pedidos de reposición habitual (mayor precisión)
 - **3 meses vista:** para planificación estacional (menor precisión, más estratégico)
 
@@ -209,7 +209,7 @@ Modelo sobreajustado:     /\/\/\/\/\/\/\/\
 - **Menos features:** a veces quitar features irrelevantes mejora mucho el modelo
 
 > [!WARNING]
-> **Regla práctica para PharmaFlow:** Si propongo un ajuste de hiperparámetros y el error de train baja mucho pero el de test no mejora (o empeora), es overfitting. Rechazarlo es la decisión correcta aunque los números de train parezcan mejores.
+> **Regla práctica para PharmaSmart:** Si propongo un ajuste de hiperparámetros y el error de train baja mucho pero el de test no mejora (o empeora), es overfitting. Rechazarlo es la decisión correcta aunque los números de train parezcan mejores.
 
 ---
 
@@ -241,7 +241,7 @@ MAPE = promedio de |(predicción - valor_real) / valor_real| × 100%
 - Permite comparar el modelo entre productos que venden 10 y productos que venden 1000 unidades
 - ⚠️ Problema: cuando `valor_real = 0` (meses sin ventas), da infinito. Hay que manejarlo.
 
-**Benchmarks para PharmaFlow:**
+**Benchmarks para PharmaSmart:**
 
 | MAPE | Calidad |
 |------|---------|
@@ -278,7 +278,7 @@ Real: NO rotura        FP (alarma falsa)   TN (acierto)
 
 ---
 
-### 7. Series Temporales (Time Series) — El corazón de PharmaFlow
+### 7. Series Temporales (Time Series) — El corazón de PharmaSmart
 
 Una **serie temporal** es una secuencia de observaciones ordenadas en el tiempo. Las ventas de un producto mes a mes son una serie temporal.
 
@@ -319,7 +319,7 @@ lag_3  = ventas_octubre_2024     # ¿qué vendí hace 3 meses?
 lag_12 = ventas_enero_2024       # ¿qué vendí hace un año exacto?
 ```
 
-**Las lag features más poderosas para PharmaFlow:**
+**Las lag features más poderosas para PharmaSmart:**
 - **Lag-1:** captura momentum reciente
 - **Lag-3:** captura tendencia trimestral
 - **Lag-12:** captura estacionalidad anual (el más importante en farmacia)
@@ -356,7 +356,7 @@ Cómo hacerla estacionaria: **diferenciación** (restar el valor anterior: venta
 
 Un modelo de ML puro aprende de números. Tú puedes transformar el contexto de la farmacia en números que el modelo pueda usar, y eso marca la diferencia entre un MAPE del 20% y uno del 8%.
 
-**Categorías de features para PharmaFlow:**
+**Categorías de features para PharmaSmart:**
 
 **A) Features temporales (calendáricas)**
 
@@ -502,11 +502,11 @@ Antes de cualquier modelo de ML, debemos calcular baselines simples. Si el model
 - Parámetros: `(p, d, q)` — orden autoregresivo, diferenciación, media móvil
 - Pros: interpretable, rápido, funciona con pocos datos
 - Contras: solo una serie a la vez, no escala bien a cientos de productos
-- Para PharmaFlow: útil para productos estrella donde queremos máxima interpretabilidad
+- Para PharmaSmart: útil para productos estrella donde queremos máxima interpretabilidad
 
 **SARIMA (Seasonal ARIMA)**
 - Añade parámetros `(P, D, Q, s)` para estacionalidad
-- `s` = periodo estacional → en PharmaFlow, s=12 (mensual anual)
+- `s` = periodo estacional → en PharmaSmart, s=12 (mensual anual)
 - Pros: capta estacionalidad explícitamente
 - Contras: 7 parámetros a ajustar, más complejo
 
@@ -518,7 +518,7 @@ Antes de cualquier modelo de ML, debemos calcular baselines simples. Si el model
 - Pros: robusto, fácil de interpretar, poco riesgo de overfitting en configuración básica
 - Contras: no es el más preciso para productos sin estacionalidad clara
 
-**Nivel 3 — ML con lag features (el más potente para PharmaFlow a escala):**
+**Nivel 3 — ML con lag features (el más potente para PharmaSmart a escala):**
 
 **XGBoost / LightGBM con features de lag**
 
@@ -547,9 +547,9 @@ Después (problema de regresión con lags):
 - Red neuronal especializada en secuencias temporales
 - Aprende dependencias largas en el tiempo por sí sola
 - Necesita: cientos de muestras por producto, GPU para entrenar, semanas de ajuste
-- Para PharmaFlow en su estado actual: **no recomendado** — alta complejidad, bajo retorno incremental
+- Para PharmaSmart en su estado actual: **no recomendado** — alta complejidad, bajo retorno incremental
 
-**Tabla de decisión para PharmaFlow:**
+**Tabla de decisión para PharmaSmart:**
 
 | Criterio | Prophet | LightGBM+lags | SARIMA |
 |----------|---------|---------------|--------|
@@ -559,7 +559,7 @@ Después (problema de regresión con lags):
 | Riesgo de overfitting | Bajo | Medio | Bajo |
 | Festivos y eventos | ✅ Nativo | Manual | ❌ No |
 | Datos mínimos necesarios | 1 año | 1.5 años | 2 años |
-| **Recomendación PharmaFlow** | Inicio | Producción | Análisis puntual |
+| **Recomendación PharmaSmart** | Inicio | Producción | Análisis puntual |
 
 ---
 
@@ -721,7 +721,7 @@ Logging + flag:             Marcar el outlier con una feature binaria
                             y ajustar el valor (el modelo aprende ambas cosas)
 ```
 
-**Roturas de stock (crítico en PharmaFlow):**
+**Roturas de stock (crítico en PharmaSmart):**
 
 Si un mes vendiste 0 unidades porque no tenías stock (no porque no había demanda), ese 0 engaña al modelo. La demanda real era X pero parece 0.
 
@@ -801,17 +801,17 @@ Error
 
 Una duda arquitectónica crítica que los fundadores enfrentan pronto: *¿Podemos correr esto en mi portátil o necesitamos pagar servidores masivos de Amazon/Google?*
 
-**La respuesta rápida para PharmaFlow: Podemos hacerlo 100% en local.**
+**La respuesta rápida para PharmaSmart: Podemos hacerlo 100% en local.**
 
 A diferencia de modelos masivos como ChatGPT (que requieren clústeres de GPUs de millones de dólares), el Machine Learning de datos tabulares (ventas, Excel, CSV) es extremadamente eficiente.
 
 **El mito del Cloud para Tabular ML:**
 Muchos creen que "Machine Learning = Cloud AWS = Dinero". Es falso. Algoritmos como LightGBM o Prophet, incluso entrenando cientos de miles de filas (varios años de ventas de miles de productos), tardan **segundos o pocos minutos en un ordenador portátil moderno estándar**.
 
-| Entorno | Pros | Contras | Veredicto PharmaFlow |
+| Entorno | Pros | Contras | Veredicto PharmaSmart |
 |---------|------|---------|----------------------|
 | **Local (Tu ordenador)** | Gratis, 0 latencia, máxima privacidad de datos (crítico en salud), iteración ultrarrápida. | Atado a tu RAM (teóricos límites con >10 millones de filas simultáneas). | ✅ **Recomendado para Fase 1 y 2**. Ideal para prototipar, validar y operar para una consultora con volúmenes iniciales/medios. |
-| **Cloud (AWS, Azure)** | Escalabilidad infinita, automatización (MLOps real), APIs externas. | Coste económico, configuración de seguridad pesada, complejidad técnica para desplegar. | ⏳ **Futuro (Fase 3)**. Solo necesario si PharmaFlow pasa a ser SaaS y miles de farmacias se conectan simultáneamente a pedir predicciones por segundo. |
+| **Cloud (AWS, Azure)** | Escalabilidad infinita, automatización (MLOps real), APIs externas. | Coste económico, configuración de seguridad pesada, complejidad técnica para desplegar. | ⏳ **Futuro (Fase 3)**. Solo necesario si PharmaSmart pasa a ser SaaS y miles de farmacias se conectan simultáneamente a pedir predicciones por segundo. |
 
 > [!TIP]
 > **Estrategia sugerida:**
@@ -827,7 +827,7 @@ Muchos creen que "Machine Learning = Cloud AWS = Dinero". Es falso. Algoritmos c
 
 Sin pipeline, cuando entrenas en datos de 2022-2024 y luego predices en 2025, podrías calcular la normalización con datos de 2025 (que no tenías disponibles en el entrenamiento). Eso corrompe todo.
 
-**Pipeline tipo para PharmaFlow:**
+**Pipeline tipo para PharmaSmart:**
 
 ```
 Datos brutos (CSV/DB)
@@ -905,7 +905,7 @@ Si MAPE_últimas_4_semanas > MAPE_baseline * 1.3:
 | Ventana deslizante | Solo usar los últimos N meses de datos | El modelo olvida el pasado lejano | Puede perder estacionalidad anual si N < 12 |
 
 > [!TIP]
-> Para PharmaFlow, recomiendo reentrenamiento **trimestral** más monitoreo mensual de métricas. Si el error sube > 30% respecto al baseline, reentrenar inmediatamente.
+> Para PharmaSmart, recomiendo reentrenamiento **trimestral** más monitoreo mensual de métricas. Si el error sube > 30% respecto al baseline, reentrenar inmediatamente.
 
 ---
 
@@ -923,7 +923,7 @@ XGBoost / LightGBM                    ●
 Redes Neuronales LSTM                       ●
 ```
 
-**¿Por qué importa la interpretabilidad en PharmaFlow?**
+**¿Por qué importa la interpretabilidad en PharmaSmart?**
 
 - **Regulación:** En el contexto sanitario, si el modelo recomienda algo, debe poder explicarse.
 - **Confianza del usuario:** "El modelo dice que pidas 200 unidades" → el farmacéutico lo rechazará si no entiende por qué.
@@ -934,7 +934,7 @@ Redes Neuronales LSTM                       ●
 SHAP resuelve parcialmente el dilema. Permite usar un modelo complejo (LightGBM) y luego explicar cada predicción individual:
 
 ```
-"PharmaFlow predice 185 unidades de Augmentine 500mg para Febrero porque:
+"PharmaSmart predice 185 unidades de Augmentine 500mg para Febrero porque:
   +62 unidades: misma época el año pasado (lag-12 = 123u, + 50.4%)
   +28 unidades: tendencia creciente en los últimos 3 meses
   +18 unidades: temporada de infecciones respiratorias
@@ -949,7 +949,7 @@ Esto convierte una "caja negra" en algo que el farmacéutico puede evaluar y val
 
 ### 20. Ética y Riesgos en Predicción — Decisiones críticas
 
-**El modelo de ML de PharmaFlow toma decisiones que afectan:**
+**El modelo de ML de PharmaSmart toma decisiones que afectan:**
 - Disponibilidad de medicamentos para pacientes
 - Inmovilización de capital en stock
 - Relaciones con proveedores
@@ -990,7 +990,7 @@ El dashboard debe mostrar siempre:
 
 ---
 
-## 🗺️ MAPA COMPLETO DEL PROCESO — PharmaFlow ML
+## 🗺️ MAPA COMPLETO DEL PROCESO — PharmaSmart ML
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -1064,14 +1064,14 @@ El dashboard debe mostrar siempre:
 
 ---
 
-*Guía elaborada para PharmaFlow — versión expandida*
+*Guía elaborada para PharmaSmart — versión expandida*
 *Próximo paso: diseño conjunto del modelo, feature a feature.*
 
 ---
 
 ## 🎯 DECISIONES DE PROYECTO APLICADAS (ACTUALIZADO)
 
-Para la implementación real del modelo en PharmaFlow, se han acordado las siguientes directrices estratégicas de datos:
+Para la implementación real del modelo en PharmaSmart, se han acordado las siguientes directrices estratégicas de datos:
 
 1. **Histórico de Festivos y Horarios Comerciales (3 Años):** Se incluirá en el dataset de entrenamiento un mapeo de los días festivos locales/nacionales y el horario de apertura de los últimos 3 años. Esto permitirá al modelo distinguir entre una "caída de demanda real" y un "día con la farmacia cerrada".
 2. **Validación de Eventos Especiales:** Se mantiene activa la lógica de la pestaña de configuración de la farmacia para variables como niveles de Gripe, COVID y Alergias. Se diseñará un método para monitorear y comprobar su impacto real sobre la calidad de las predicciones del modelo ("Feature Injection").
