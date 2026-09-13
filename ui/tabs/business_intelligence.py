@@ -48,7 +48,7 @@ def modulo_business_intelligence():
     with k3: render_kpi("UVI", format_eur(duvi), f"{len(df_uvi)} prods", False)
     with k4: render_kpi("Roturas", str(nr), f"{format_eur(coste_op)}/mes", False)
     with k5: render_kpi("Rotacion", f"{rotacion_media:.2f}", "Media (>1=buen giro)")
-    with k6: render_kpi("Tend. Ventas", f"{tend:+.1f}%", "vs año anterior")
+    with k6: render_kpi("Tend. Ventas", f"{tend:+.1f}%", "ult. 12m vs 12m previos")
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button("\U0001f4f8 Guardar Snapshot KPIs"):

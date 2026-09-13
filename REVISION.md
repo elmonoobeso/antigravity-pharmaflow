@@ -108,7 +108,7 @@ ESTADO: Fase 1 terminada. Esperando aprobacion para empezar lote 1 en rama revis
 
 ## Fase 2: correccion (rama revision-fable)
 - [x] Lote 1 CN normalizado (utils/helpers.normalizar_cn): cargas y autocarga, protegidos, promociones, conciliacion, mapa ATC. Verificado: float/str casan, protegido sin duplicar, ATC 29 grupos (antes 1), AppTest sin excepciones.
-- [ ] Lote 2 tendencia heuristica + Growth_Factor (12m moviles vs 12m previos, sin mirar futuro en ML); Health Score con productos sin ventas (desv. max); zombie unico = stock>0 y 12m sin ventas (tambien snapshot auditoria).
+- [x] Lote 2 business.crecimiento_12m (12m vs 12m previos, solo pasado) usado en tendencia heuristica y Growth_Factor ML; mirroring sobre ultimos 12m; HS con stock sin ventas = desv 2.0; zombie del snapshot = 12m. Verificado: tendencia media -31%->+3,1% (igual a calculo manual), VMM 33,5->53,1, sin fuga (alterar meses futuros no cambia pasado), backtest ML 7,99 vs base 8,47 (+5,7%), HS Farmacia_Test 49,9->7,0 (12 de 42 con stock sin ventas), AppTest OK. Nota lote 3: Was_Promo sale 3a en importancia (constante por CN con promos actuales, posible fuga).
 - [ ] Lote 3 prediccion ML a futuro (filas por mes de cobertura desde el mes siguiente a hoy, recursivo, aviso si historico desfasado); cold start sin tocar Ventas.
 - [ ] Lote 4 uploaders sin reprocesar en cada rerun.
 - [ ] Lote 5 Confirmar Pedido una sola vez + parametros del pedido.

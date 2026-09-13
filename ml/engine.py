@@ -13,7 +13,7 @@ from config.settings import (
 )
 from core.business import (
     calcular_horas_mes, calcular_dias_abiertos_mes, obtener_cns_con_promo_historica,
-    generar_pedido_cobertura
+    generar_pedido_cobertura, crecimiento_12m
 )
 import streamlit as st
 
@@ -147,15 +147,12 @@ def build_features(df_ventas, df_inventario, perfil, calendario, df_ofertas_norm
                             on=[COL_CN, "Anio", "Mes"], how="left")
     mensual["Base_Mirroring"] = mensual["Base_Mirroring"].fillna(0)
 
-    ventas_anual = mensual.groupby([COL_CN, "Anio"])[COL_VENTAS].sum().reset_index()
-    growth = {}
-    for cn, g in ventas_anual.groupby(COL_CN):
-        vals = g.sort_values("Anio")[COL_VENTAS].values
-        if len(vals) >= 2 and vals[-2] > 0:
-            growth[cn] = np.clip(vals[-1] / vals[-2] - 1, -0.5, 0.5)
-        else:
-            growth[cn] = 0.0
-    mensual["Growth_Factor"] = mensual[COL_CN].map(growth).fillna(0)
+    # Crecimiento 12m vs 12m previos calculado en cada mes solo con meses anteriores:
+    # la version previa usaba los dos ultimos anos naturales para todas las filas (fuga).
+    mensual["_periodo"] = mensual["Anio"] * 12 + mensual["Mes"]
+    crec = crecimiento_12m(mensual).rename(columns={"Crecimiento_12m": "Growth_Factor"})
+    mensual = mensual.merge(crec, on=[COL_CN, "_periodo"], how="left").drop(columns="_periodo")
+    mensual["Growth_Factor"] = mensual["Growth_Factor"].fillna(0.0)
 
     mensual["Lag_30"] = mensual.groupby(COL_CN)[COL_VENTAS].shift(1).fillna(0)
     mensual["Pct_Zona_Cobro"] = mensual.apply(

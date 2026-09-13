@@ -80,7 +80,12 @@ def registrar_snapshot_auditoria(df_inventario, df_ventas_media):
     df = df_inventario.merge(df_ventas_media, on=COL_CN, how="left")
     df["Venta_Media_Mensual"] = df["Venta_Media_Mensual"].fillna(0)
 
-    zombies = df[(df[COL_STOCK] > 0) & (df["Venta_Media_Mensual"] == 0)]
+    # Misma definicion que BI/Auditoria: stock > 0 y 12 meses sin ventas.
+    df_hist = st.session_state.get("historico")
+    if df_hist is not None and not df_hist.empty:
+        zombies = df[df[COL_CN].isin(calcular_stock_zombie(df_inventario, df_hist)[COL_CN])]
+    else:
+        zombies = df[(df[COL_STOCK] > 0) & (df["Venta_Media_Mensual"] == 0)]
     valor_zombie_total = round(float((zombies[COL_STOCK] * zombies.get(COL_PVL, pd.Series(0, index=zombies.index))).fillna(0).sum()), 2)
     zombie_list = []
     for _, r in zombies.head(30).iterrows():
@@ -279,6 +284,28 @@ def imputar_stockouts(df_ventas, df_inventario):
         df.loc[mask_cn, COL_VENTAS] = list(ventas)
     return df
 
+def crecimiento_12m(ventas_por_mes, col_periodo="_periodo"):
+    """Crecimiento por producto en cada periodo p: ventas de p-12..p-1 frente a p-24..p-13.
+
+    Solo usa meses anteriores a p (sin mirar el futuro); los meses sin fila cuentan
+    como 0. Si el producto no tiene 24 meses de historia antes de p, vale 0.
+    Devuelve [COL_CN, col_periodo, "Crecimiento_12m"] desde el primer periodo hasta el ultimo + 1.
+    """
+    if ventas_por_mes.empty:
+        return pd.DataFrame(columns=[COL_CN, col_periodo, "Crecimiento_12m"])
+    pmin, pmax = int(ventas_por_mes[col_periodo].min()), int(ventas_por_mes[col_periodo].max())
+    ancho = (ventas_por_mes.groupby([col_periodo, COL_CN])[COL_VENTAS].sum()
+             .unstack(COL_CN).reindex(range(pmin, pmax + 2)).fillna(0))
+    ult12 = ancho.rolling(12, min_periods=12).sum().shift(1)
+    prev12 = ult12.shift(12)
+    crec = (ult12 / prev12.where(prev12 > 0) - 1).clip(-0.5, 0.5)
+    primer = ventas_por_mes.groupby(COL_CN)[col_periodo].min().reindex(crec.columns).to_numpy()
+    con_historia = crec.index.to_numpy()[:, None] >= primer[None, :] + 24
+    crec = crec.where(con_historia).fillna(0.0).round(4)
+    crec.index.name = col_periodo
+    crec.columns.name = COL_CN
+    return crec.stack(future_stack=True).reset_index(name="Crecimiento_12m")
+
 def calcular_ventas_mensuales(df_ventas, meses_cobertura=2):
     df = df_ventas.copy()
     if COL_FECHA not in df.columns:
@@ -294,29 +321,20 @@ def calcular_ventas_mensuales(df_ventas, meses_cobertura=2):
     df["Anio"] = df[COL_FECHA].dt.year
     df["Mes_Cal"] = df[COL_FECHA].dt.month
     ventas_por_mes = df.groupby([COL_CN, "Anio", "Mes_Cal"])[COL_VENTAS].sum().reset_index()
-    anios_unicos = sorted(ventas_por_mes["Anio"].unique())
-    anio_max = anios_unicos[-1]
+    ventas_por_mes["_periodo"] = ventas_por_mes["Anio"] * 12 + ventas_por_mes["Mes_Cal"]
+    p_max = ventas_por_mes["_periodo"].max()
 
-    cns_unicos_ft = ventas_por_mes[COL_CN].unique()
-    factor_tendencia = pd.DataFrame({COL_CN: cns_unicos_ft, "Factor_Tendencia": [0.0] * len(cns_unicos_ft)})
-    if len(anios_unicos) >= 2:
-        ventas_anual = ventas_por_mes.groupby([COL_CN, "Anio"])[COL_VENTAS].sum().reset_index().sort_values([COL_CN, "Anio"])
-        crecimientos = []
-        for cn, grupo in ventas_anual.groupby(COL_CN):
-            if len(grupo) < 2:
-                crecimientos.append({COL_CN: cn, "Factor_Tendencia": 0.0}); continue
-            vals = grupo[COL_VENTAS].values
-            tasas = [(vals[i]/vals[i-1] - 1) for i in range(1, len(vals)) if vals[i-1] > 0]
-            if tasas:
-                pesos = list(range(1, len(tasas)+1))
-                crecimientos.append({COL_CN: cn, "Factor_Tendencia": round(np.clip(np.average(tasas, weights=pesos), -0.5, 0.5), 4)})
-            else:
-                crecimientos.append({COL_CN: cn, "Factor_Tendencia": 0.0})
-        factor_tendencia = pd.DataFrame(crecimientos)
+    # Tendencia: ultimos 12 meses frente a los 12 anteriores (no anos naturales,
+    # que con el ano en curso incompleto daban caidas ficticias).
+    crec = crecimiento_12m(ventas_por_mes)
+    factor_tendencia = (crec[crec["_periodo"] == p_max + 1][[COL_CN, "Crecimiento_12m"]]
+                        .rename(columns={"Crecimiento_12m": "Factor_Tendencia"}))
 
     hoy = datetime.now()
     meses_futuro = [(hoy + relativedelta(months=m)).month for m in range(1, meses_cobertura+1)]
-    mirror = ventas_por_mes[(ventas_por_mes["Anio"] == anio_max) & (ventas_por_mes["Mes_Cal"].isin(meses_futuro))]
+    # Mirroring: el mismo mes en los ultimos 12 meses de historico (cada mes aparece una vez).
+    recientes = ventas_por_mes[ventas_por_mes["_periodo"] > p_max - 12]
+    mirror = recientes[recientes["Mes_Cal"].isin(meses_futuro)]
     venta_mirror = mirror.groupby(COL_CN)[COL_VENTAS].mean().reset_index().rename(columns={COL_VENTAS: "Venta_Media_Mensual"}) if not mirror.empty else pd.DataFrame(columns=[COL_CN, "Venta_Media_Mensual"])
     media_global = ventas_por_mes.groupby(COL_CN)[COL_VENTAS].mean().reset_index().rename(columns={COL_VENTAS: "Venta_Media_Global"})
     std_mensual = ventas_por_mes.groupby(COL_CN)[COL_VENTAS].std().fillna(0).reset_index().rename(columns={COL_VENTAS: "Venta_Std_Mensual"})
@@ -348,10 +366,13 @@ def calcular_health_score(df_inventario, df_ventas_media, meses_cobertura_objeti
     df = df_inventario.merge(df_ventas_media, on=COL_CN, how="left")
     df["Venta_Media_Mensual"] = df["Venta_Media_Mensual"].fillna(0)
     df["Stock_Ideal"] = df["Venta_Media_Mensual"] * meses_cobertura_objetivo
-    mask = df["Venta_Media_Mensual"] > 0
+    con_venta = df["Venta_Media_Mensual"] > 0
+    # Productos con stock y sin ventas cuentan con la desviacion maxima: bajan el score.
+    mask = con_venta | (df[COL_STOCK] > 0)
     if mask.sum() == 0: return 50.0
     df_a = df[mask].copy()
-    df_a["Desv"] = ((df_a[COL_STOCK] - df_a["Stock_Ideal"]).abs() / df_a["Stock_Ideal"]).clip(upper=2.0)
+    desv = (df_a[COL_STOCK] - df_a["Stock_Ideal"]).abs() / df_a["Stock_Ideal"].where(con_venta[mask])
+    df_a["Desv"] = desv.fillna(2.0).clip(upper=2.0)
     return round(max(0, 100 - df_a["Desv"].mean() * 100), 1)
 
 def calcular_stock_zombie(df_inventario, df_ventas, meses_sin_venta=12):
