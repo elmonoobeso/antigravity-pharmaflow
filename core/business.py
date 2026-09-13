@@ -865,6 +865,32 @@ def generar_pedido_cobertura(df_inventario, df_ventas_media, meses_cobertura,
     df_ped["Ahorro"] = df_ped["Coste_Sin_Dto"] - df_ped["Coste_Con_Dto"]
     return df_ped
 
+def _tiers_de_oferta(oferta):
+    tiers = oferta.get("Tiers", []) if oferta is not None else []
+    if isinstance(tiers, str):
+        try: tiers = json.loads(tiers)
+        except (json.JSONDecodeError, ValueError, TypeError): tiers = []
+    return list(tiers) if tiers is not None else []
+
+def max_unidades_en_presupuesto(deseadas, precio, tiers, margen):
+    """Mayor cantidad <= deseadas cuyo coste, con el descuento que corresponde a ESA
+    cantidad, cabe en el margen. Devuelve (unidades, descuento, nombre del tramo).
+
+    Se evalua cada tramo por separado porque el coste no es monotono: llegar a un
+    tramo puede abaratar el total, y bajar de el lo encarece.
+    """
+    tramos = [(0, 0.0, "Sin oferta")] + [(int(t["min"]), float(t["dto"]), f"Tier {i + 1}") for i, t in enumerate(tiers)]
+    tramos.sort(key=lambda t: t[0])
+    mejor = (0, 0.0, "Sin oferta")
+    for i, (minimo, dto, nombre) in enumerate(tramos):
+        tope = tramos[i + 1][0] - 1 if i + 1 < len(tramos) else deseadas
+        neto = precio * (1 - dto)
+        caben = deseadas if neto <= 0 else int(margen / neto + 1e-9)
+        q = min(deseadas, tope, caben)
+        if q >= max(minimo, 1) and q > mejor[0]:
+            mejor = (q, dto, nombre)
+    return mejor
+
 def generar_pedido_presupuesto(df_inventario, df_ventas_media, presupuesto, meses_cobertura,
                                 df_ofertas=None, productos_protegidos=None):
     df_ideal = generar_pedido_cobertura(df_inventario, df_ventas_media, meses_cobertura, df_ofertas,
@@ -876,15 +902,26 @@ def generar_pedido_presupuesto(df_inventario, df_ventas_media, presupuesto, mese
     gasto_p = (df_p["Cantidad_A_Pedir"] * df_p["Precio_Unitario"] * (1 - df_p["Descuento_Aplicado"])).sum() if not df_p.empty else 0
     ppto_r = max(0, presupuesto - gasto_p)
     df_r = df_r.sort_values("Venta_Media_Mensual", ascending=False).reset_index(drop=True)
-    gasto = 0.0; cantidades = []
-    for _, row in df_r.iterrows():
-        precio_neto = row["Precio_Unitario"] * (1 - row["Descuento_Aplicado"])
-        if precio_neto <= 0: cantidades.append(int(row["Cantidad_A_Pedir"])); continue
-        margen = ppto_r - gasto
-        if margen <= 0: cantidades.append(0); continue
-        uds = min(int(row["Cantidad_A_Pedir"]), int(margen / precio_neto))
-        cantidades.append(uds); gasto += uds * precio_neto
-    df_r["Cantidad_A_Pedir"] = cantidades
+    # Al recortar unidades hay que recalcular el tramo: antes se conservaba el descuento
+    # de la cantidad completa aunque la recortada ya no llegara al minimo del tramo.
+    indice = construir_indice_ofertas(df_ofertas)
+    gasto = 0.0
+    for idx, row in df_r.iterrows():
+        deseadas = int(row["Cantidad_A_Pedir"])
+        precio = float(row["Precio_Unitario"])
+        if precio <= 0:
+            continue
+        tiers = []
+        if row.get("Tier_Aplicado", "Sin oferta") != "Sin oferta":
+            tiers = _tiers_de_oferta(buscar_oferta_por_indice(
+                str(row.get(COL_NOMBRE, "")), str(row.get(COL_MOLECULA, "")), indice, df_ofertas))
+        uds, dto, tramo = max_unidades_en_presupuesto(deseadas, precio, tiers, max(0.0, ppto_r - gasto))
+        if uds < deseadas:
+            df_r.at[idx, "Cantidad_A_Pedir"] = uds
+            df_r.at[idx, "Descuento_Aplicado"] = dto
+            df_r.at[idx, "Tier_Aplicado"] = tramo
+            df_r.at[idx, "Upselling"] = False
+        gasto += uds * precio * (1 - dto)
     df_r = df_r[df_r["Cantidad_A_Pedir"] > 0]
     df_f = pd.concat([df_p, df_r], ignore_index=True)
     df_f["Coste_Sin_Dto"] = df_f["Cantidad_A_Pedir"] * df_f["Precio_Unitario"]
