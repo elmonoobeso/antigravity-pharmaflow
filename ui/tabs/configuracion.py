@@ -10,6 +10,19 @@ from utils.helpers import validar_y_renombrar_columnas
 from utils.network import ejecutar_benchmark_red
 
 
+def _archivo_ya_procesado(archivo, clave):
+    """st.file_uploader devuelve el mismo archivo en CADA rerun. Sin esto, cualquier clic
+    en la app volvia a guardar el parquet, anadir un snapshot de auditoria (borrando el
+    historial real al superar el tope) o pisar las ediciones manuales de protegidos."""
+    return st.session_state.get(clave) == _id_archivo(archivo)
+
+def _marcar_procesado(archivo, clave):
+    st.session_state[clave] = _id_archivo(archivo)
+
+def _id_archivo(archivo):
+    return getattr(archivo, "file_id", None) or f"{archivo.name}-{archivo.size}"
+
+
 def modulo_configuracion():
     st.markdown("### \u2699\ufe0f Centro de Control")
 
@@ -20,7 +33,9 @@ def modulo_configuracion():
         st.markdown('<div class="upload-zone">', unsafe_allow_html=True)
         file_inv = st.file_uploader("\U0001f4e6 INVENTARIO", type=["xlsx","xls","csv"], key="up_inv")
         st.markdown('</div>', unsafe_allow_html=True)
-        if file_inv:
+        if file_inv and _archivo_ya_procesado(file_inv, "_proc_up_inv"):
+            st.caption(f"\u2705 {file_inv.name} ya cargado ({len(st.session_state.get('inventario', []))} productos)")
+        elif file_inv:
             try:
                 df_inv = pd.read_csv(file_inv) if file_inv.name.endswith(".csv") else pd.read_excel(file_inv)
                 df_inv, inf = validar_y_renombrar_columnas(df_inv, [COL_CN, COL_STOCK, COL_PVL, COL_LAB, COL_NOMBRE, COL_MOLECULA])
@@ -33,12 +48,15 @@ def modulo_configuracion():
                 if not df_vm_snap.empty:
                     snap = registrar_snapshot_auditoria(df_inv, df_vm_snap)
                     st.caption(f"\U0001f4f8 Snapshot guardado: {snap['n_zombies']} zombies, {snap['n_roturas']} roturas")
+                _marcar_procesado(file_inv, "_proc_up_inv")
             except Exception as e: st.error(f"Error: {e}")
     with c2:
         st.markdown('<div class="upload-zone">', unsafe_allow_html=True)
         file_v = st.file_uploader("\U0001f4c8 HISTORICO VENTAS (36 meses)", type=["xlsx","xls","csv"], key="up_ven")
         st.markdown('</div>', unsafe_allow_html=True)
-        if file_v:
+        if file_v and _archivo_ya_procesado(file_v, "_proc_up_ven"):
+            st.caption(f"\u2705 {file_v.name} ya cargado ({len(st.session_state.get('historico', []))} registros)")
+        elif file_v:
             try:
                 df_v = pd.read_csv(file_v) if file_v.name.endswith(".csv") else pd.read_excel(file_v)
                 df_v, inf = validar_y_renombrar_columnas(df_v, [COL_CN, COL_VENTAS, COL_FECHA])
@@ -51,16 +69,18 @@ def modulo_configuracion():
                     anios = df_v[COL_FECHA].dropna().dt.year.nunique()
                     st.info(f"{len(df_v)} registros | {anios} anio(s)")
                 else: st.info(f"{len(df_v)} registros")
+                _marcar_procesado(file_v, "_proc_up_ven")
             except Exception as e: st.error(f"Error: {e}")
 
     # --- B. Ofertas Tiers Dinamicos ---
     st.divider()
     st.markdown("#### B. Ofertas del Laboratorio")
     file_of = st.file_uploader("\U0001f3f7\ufe0f OFERTAS", type=["xlsx","xls","csv"], key="up_of")
-    if file_of:
+    if file_of and not _archivo_ya_procesado(file_of, "_proc_up_of"):
         try:
             df_of = pd.read_csv(file_of) if file_of.name.endswith(".csv") else pd.read_excel(file_of)
             st.session_state["ofertas_raw"] = df_of
+            _marcar_procesado(file_of, "_proc_up_of")
         except Exception as e: st.error(f"Error: {e}")
     df_of_raw = st.session_state.get("ofertas_raw")
     if df_of_raw is not None and not df_of_raw.empty:
@@ -102,7 +122,9 @@ def modulo_configuracion():
     st.caption("Carga por Excel o edita manualmente. Formato: codigo_nacional, nombre, stock_minimo, motivo")
 
     file_prot = st.file_uploader("\U0001f4c4 Cargar desde Excel:", type=["xlsx","xls","csv"], key="up_prot")
-    if file_prot:
+    if file_prot and _archivo_ya_procesado(file_prot, "_proc_up_prot"):
+        st.caption(f"\u2705 {file_prot.name} ya cargado. Las ediciones de la tabla se conservan.")
+    elif file_prot:
         try:
             df_prot_up = pd.read_csv(file_prot) if file_prot.name.endswith(".csv") else pd.read_excel(file_prot)
             df_prot_up, _ = validar_y_renombrar_columnas(df_prot_up, ["codigo_nacional", "nombre", "stock_minimo", "motivo"])
@@ -110,6 +132,7 @@ def modulo_configuracion():
                 nuevos = df_prot_up.dropna(subset=["codigo_nacional"]).to_dict("records")
                 guardar_productos_protegidos(nuevos)
                 st.success(f"\u2705 {len(nuevos)} productos protegidos cargados desde Excel.")
+                _marcar_procesado(file_prot, "_proc_up_prot")
             else:
                 st.error("El Excel debe tener columna 'codigo_nacional'.")
         except Exception as e: st.error(f"Error: {e}")
@@ -201,7 +224,7 @@ def modulo_configuracion():
     with cg1:
         st.markdown("**Tabla Maestra ATC** (Excel: Codigo_Nacional + Grupo_ATC)")
         file_atc = st.file_uploader("\U0001f9ec Tabla ATC", type=["xlsx","xls","csv"], key="up_atc")
-        if file_atc:
+        if file_atc and not _archivo_ya_procesado(file_atc, "_proc_up_atc"):
             try:
                 if file_atc.name.endswith(".csv"):
                     df_atc = pd.read_csv(file_atc, dtype=str)
@@ -213,9 +236,10 @@ def modulo_configuracion():
                 if ruta_f:
                     df_atc.to_csv(ruta_f / "tabla_atc.csv", index=False)
                 st.success(f"\u2705 Tabla ATC: {len(df_atc)} registros | Columnas: {', '.join(df_atc.columns[:4])}")
+                _marcar_procesado(file_atc, "_proc_up_atc")
             except Exception as e:
                 st.error(f"Error leyendo tabla ATC: {e}")
-        elif "tabla_maestra_atc" not in st.session_state:
+        if "tabla_maestra_atc" not in st.session_state:
             # Intentar cargar de disco
             ruta_f = ruta_farmacia_activa()
             if ruta_f and (ruta_f / "tabla_atc.csv").exists():
@@ -227,7 +251,7 @@ def modulo_configuracion():
     with cg2:
         st.markdown("**Temperatura Historica** (CSV: Anio, Mes, Temp_Media)")
         file_temp = st.file_uploader("\U0001f321\ufe0f Temperatura", type=["csv","xlsx"], key="up_temp")
-        if file_temp:
+        if file_temp and not _archivo_ya_procesado(file_temp, "_proc_up_temp"):
             try:
                 if file_temp.name.endswith(".csv"):
                     df_temp = pd.read_csv(file_temp)
@@ -242,9 +266,10 @@ def modulo_configuracion():
                 if ruta_f:
                     df_temp.to_csv(ruta_f / "temperatura.csv", index=False)
                 st.success(f"\u2705 Temperatura: {len(df_temp)} meses cargados")
+                _marcar_procesado(file_temp, "_proc_up_temp")
             except Exception as e:
                 st.error(f"Error leyendo temperatura: {e}")
-        elif "temperatura_historica" not in st.session_state:
+        if "temperatura_historica" not in st.session_state:
             # Intentar cargar de disco
             ruta_f = ruta_farmacia_activa()
             if ruta_f and (ruta_f / "temperatura.csv").exists():
