@@ -303,6 +303,9 @@ def modulo_configuracion():
             st.success(f"\u2705 Modelo entrenado | RMSE: {met.get('rmse','?')} | R\u00b2: {met.get('r2','?')} | Fecha: {fecha_ent}")
             if necesita_reentrenamiento():
                 st.warning("\u26a0\ufe0f El historico ha cambiado desde el ultimo entrenamiento. Reentrena para mejores resultados.")
+        elif met and met.get("obsoleto"):
+            st.warning("⚠️ El modelo guardado se entreno con una version anterior del "
+                       "motor y ya no es compatible. Reentrenalo para volver a usar la IA.")
         else:
             st.info("No hay modelo entrenado para esta farmacia.")
 
@@ -317,9 +320,17 @@ def modulo_configuracion():
                     df_feat = cold_start_proxy(df_feat, st.session_state["inventario"])
                     model, metricas, rmse_cn = entrenar_modelo_ml(df_feat)
                     if model is not None:
-                        guardar_modelo_farmacia(model, metricas, rmse_cn)
+                        guardar_modelo_farmacia(model, metricas, rmse_cn, df_feat)
                         invalidar_cache_modelo()
-                        st.success(f"\u2705 Modelo entrenado | RMSE: {metricas['rmse']} | R\u00b2: {metricas['r2']}")
+                        bt = metricas.get("backtest", {})
+                        mejora = bt.get("mejora_pct")
+                        st.success(f"\u2705 Modelo entrenado | RMSE backtest: {metricas['rmse']} | R\u00b2 holdout: {metricas['r2']}")
+                        if mejora is not None:
+                            if mejora > 0:
+                                st.info(f"El ML mejora al baseline heuristico en un {mejora}% de RMSE.")
+                            else:
+                                st.warning(f"El ML NO mejora al baseline heuristico ({mejora}%). "
+                                           "Conviene usar el motor Heuristico para esta farmacia.")
                         fig_imp = grafico_importancia_features(metricas)
                         if fig_imp: st.plotly_chart(fig_imp, width='stretch')
                     else:

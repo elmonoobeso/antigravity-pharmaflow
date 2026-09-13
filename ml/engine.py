@@ -8,18 +8,16 @@ from datetime import datetime
 from calendar import monthrange
 from data.io import cargar_json_farmacia, guardar_json_farmacia, ruta_farmacia_activa
 from config.settings import (
-    COL_CN, COL_VENTAS, COL_FECHA, COL_MOLECULA, COL_STOCK, Z_SCORES
+    COL_CN, COL_VENTAS, COL_FECHA, COL_MOLECULA, Z_SCORES
 )
 from core.business import (
     calcular_horas_mes, calcular_dias_abiertos_mes, obtener_cns_con_promo_historica,
     generar_pedido_cobertura
 )
-from utils.helpers import safe_div
 import streamlit as st
 
 try:
     from xgboost import XGBRegressor
-    from sklearn.model_selection import train_test_split
     from sklearn.metrics import mean_squared_error, r2_score
     import joblib
     ML_AVAILABLE = True
@@ -40,8 +38,14 @@ FEATURE_COLS = [
     "Perfil_centro_salud", "Perfil_residencia", "Perfil_colegio",
     "Perfil_zona_turistica", "Perfil_zona_rural",
     "Mes_Num", "Was_Promo", "Is_Future_Promo",
-    "ATC_Encoded", "Temp_Media", "Temp_Desviacion", "Stock_Ratio",
+    "ATC_Encoded", "Temp_Media", "Temp_Desviacion",
 ]
+
+# Meses reservados como holdout final. No se usan ni para entrenar ni para
+# elegir hiperparametros: solo para medir.
+MESES_TEST_HOLDOUT = 3
+MESES_VALIDACION = 3
+MIN_PERIODOS_HISTORICO = 12
 
 def _pct_zona_cobro(anio, mes):
     dias = monthrange(int(anio), int(mes))[1]
@@ -77,6 +81,34 @@ def _obtener_temperatura(anio, mes, temp_data, zona):
     if zona_key not in TEMP_CLIMATICA:
         zona_key = "mediterraneo"
     return TEMP_CLIMATICA[zona_key][mes - 1]
+
+def _codificar_atc_sin_fuga(mensual):
+    """Media historica de ventas del grupo ATC usando SOLO meses anteriores.
+
+    La version previa hacia cumsum sobre un dataframe ordenado por CN, no por
+    fecha: para un producto con historico antiguo, la media acumulada de su
+    grupo ya incluia ventas de otros productos en meses posteriores. Es decir,
+    el modelo veia el futuro. Aqui se agrega por (grupo, mes) y se toma la media
+    expansiva desplazada un periodo, de modo que cada fila solo ve el pasado.
+    """
+    periodo = mensual["Anio"] * 12 + mensual["Mes"]
+    agg = (mensual.assign(_periodo=periodo)
+                  .groupby(["_grupo_atc", "_periodo"])[COL_VENTAS].mean()
+                  .reset_index(name="_media_periodo")
+                  .sort_values(["_grupo_atc", "_periodo"]))
+    agg["_enc"] = (agg.groupby("_grupo_atc")["_media_periodo"]
+                      .transform(lambda s: s.shift(1).expanding().mean()))
+
+    # Respaldo para el primer mes de cada grupo: media global de meses anteriores.
+    glob = (mensual.assign(_periodo=periodo)
+                   .groupby("_periodo")[COL_VENTAS].mean()
+                   .sort_index())
+    glob_exp = glob.shift(1).expanding().mean()
+
+    enc = mensual.assign(_periodo=periodo).merge(
+        agg[["_grupo_atc", "_periodo", "_enc"]], on=["_grupo_atc", "_periodo"], how="left")
+    resultado = enc["_enc"].fillna(enc["_periodo"].map(glob_exp)).fillna(0.0)
+    return resultado.round(2).values
 
 def cold_start_proxy(df_features, df_inventario, min_meses=6):
     conteo = df_features.groupby(COL_CN).size().reset_index(name="n_meses")
@@ -160,11 +192,7 @@ def build_features(df_ventas, df_inventario, perfil, calendario, df_ofertas_norm
     atc_map = _obtener_mapa_atc(df_inventario)
     mensual["_grupo_atc"] = mensual[COL_CN].map(atc_map).fillna("OTRO")
     mensual = mensual.sort_values([COL_CN, "Anio", "Mes"]).reset_index(drop=True)
-    global_mean_ventas = mensual[COL_VENTAS].mean()
-    atc_cumsum = mensual.groupby("_grupo_atc")[COL_VENTAS].cumsum() - mensual[COL_VENTAS]
-    atc_cumcount = mensual.groupby("_grupo_atc").cumcount()
-    mensual["ATC_Encoded"] = np.where(atc_cumcount > 0, atc_cumsum / atc_cumcount, global_mean_ventas)
-    mensual["ATC_Encoded"] = mensual["ATC_Encoded"].round(2)
+    mensual["ATC_Encoded"] = _codificar_atc_sin_fuga(mensual)
     mensual = mensual.drop(columns=["_grupo_atc"])
 
     temp_data = st.session_state.get("temperatura_historica")
@@ -178,48 +206,198 @@ def build_features(df_ventas, df_inventario, perfil, calendario, df_ofertas_norm
     else:
         mensual["Temp_Desviacion"] = 0.0
 
-    if COL_STOCK in df_inventario.columns:
-        stock_map = df_inventario.set_index(COL_CN)[COL_STOCK].to_dict()
-        vm_global = mensual.groupby(COL_CN)[COL_VENTAS].mean().to_dict()
-        ultimo_idx = mensual.groupby(COL_CN).tail(1).index
-        mensual["Stock_Ratio"] = 0.0
-        for _sr_idx in ultimo_idx:
-            _sr_cn = mensual.at[_sr_idx, COL_CN]
-            mensual.at[_sr_idx, "Stock_Ratio"] = round(safe_div(stock_map.get(_sr_cn, 0), vm_global.get(_sr_cn, 1)), 2)
-    else:
-        mensual["Stock_Ratio"] = 0.0
-
+    # Stock_Ratio se elimino como feature: solo existe inventario actual, no
+    # snapshots historicos, asi que en entrenamiento valia 0 en casi todas las
+    # filas y en prediccion tomaba un valor que el modelo nunca habia visto. El
+    # stock real ya se descuenta despues, al calcular las unidades del pedido.
     return mensual
 
+REJILLA_HIPERPARAMETROS = [
+    {"max_depth": 3, "learning_rate": 0.05, "n_estimators": 300},
+    {"max_depth": 3, "learning_rate": 0.10, "n_estimators": 200},
+    {"max_depth": 4, "learning_rate": 0.05, "n_estimators": 300},
+    {"max_depth": 4, "learning_rate": 0.10, "n_estimators": 200},
+    {"max_depth": 6, "learning_rate": 0.05, "n_estimators": 300},
+    {"max_depth": 6, "learning_rate": 0.10, "n_estimators": 200},
+]
+
+def _periodos(df):
+    """Serie entera Anio*12+Mes: ordena meses sin depender del formato de fecha."""
+    return df["Anio"].astype(int) * 12 + df["Mes"].astype(int)
+
+def _fmt_periodo(p):
+    """Convierte el entero de periodo a 'AAAA-MM'. Diciembre es el caso borde:
+    p % 12 vale 0 y p // 12 ya ha sumado un anio, de ahi el -1."""
+    p = int(p)
+    return f"{(p - 1) // 12}-{(p - 1) % 12 + 1:02d}"
+
+def _construir_modelo(params):
+    return XGBRegressor(subsample=0.8, colsample_bytree=0.8, random_state=42,
+                        verbosity=0, n_jobs=-1, **params)
+
+def _metricas_error(y_real, y_pred):
+    y_real = np.asarray(y_real, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    err = y_pred - y_real
+    no_cero = y_real > 0
+    mape = float(np.mean(np.abs(err[no_cero] / y_real[no_cero])) * 100) if no_cero.any() else None
+    return {
+        "rmse": round(float(np.sqrt(np.mean(err ** 2))), 2),
+        "mae": round(float(np.mean(np.abs(err))), 2),
+        "mape": round(mape, 1) if mape is not None else None,
+        "sesgo": round(float(np.mean(err)), 2),
+        "n": int(len(y_real)),
+    }
+
+def _prediccion_baseline(df_fold):
+    """Baseline honesto: mismo mes del ano pasado y, si no existe, el mes previo.
+
+    Es el comparador contra el que el ML tiene que demostrar que aporta algo.
+    """
+    mirror = df_fold["Base_Mirroring"].astype(float) if "Base_Mirroring" in df_fold.columns else pd.Series(0.0, index=df_fold.index)
+    lag = df_fold["Lag_30"].astype(float) if "Lag_30" in df_fold.columns else pd.Series(0.0, index=df_fold.index)
+    return mirror.where(mirror > 0, lag).values
+
+def _ajustar_hiperparametros(df_train, cols, n_folds=MESES_VALIDACION):
+    """Elige hiperparametros con validacion temporal DENTRO del periodo de train.
+
+    El holdout final no participa: si se eligiera la configuracion mirando el
+    test, el test dejaria de ser una medida honesta.
+    """
+    periodos = sorted(_periodos(df_train).unique())
+    folds = periodos[-n_folds:] if len(periodos) > n_folds + 2 else periodos[-1:]
+    ensayos = []
+    for params in REJILLA_HIPERPARAMETROS:
+        errores = []
+        for p_val in folds:
+            mask_tr = _periodos(df_train) < p_val
+            mask_val = _periodos(df_train) == p_val
+            if mask_tr.sum() < 10 or mask_val.sum() == 0:
+                continue
+            modelo = _construir_modelo(params)
+            modelo.fit(df_train.loc[mask_tr, cols].fillna(0), df_train.loc[mask_tr, COL_VENTAS])
+            pred = modelo.predict(df_train.loc[mask_val, cols].fillna(0)).clip(min=0)
+            errores.append(np.sqrt(mean_squared_error(df_train.loc[mask_val, COL_VENTAS], pred)))
+        if errores:
+            ensayos.append({"params": params, "rmse_validacion": round(float(np.mean(errores)), 3),
+                            "n_folds": len(errores)})
+    if not ensayos:
+        return REJILLA_HIPERPARAMETROS[1], []
+    ensayos.sort(key=lambda e: e["rmse_validacion"])
+    return ensayos[0]["params"], ensayos
+
+def _backtest_walk_forward(df, cols, params, n_folds=MESES_TEST_HOLDOUT):
+    """Reentrena avanzando mes a mes y predice el siguiente, como en produccion.
+
+    Devuelve las metricas por fold, el comparador baseline y el error por
+    producto, que es lo que alimenta el stock de seguridad.
+    """
+    periodos = sorted(_periodos(df).unique())
+    folds_periodos = periodos[-n_folds:]
+    detalle, residuos = [], []
+    for p_test in folds_periodos:
+        mask_tr = _periodos(df) < p_test
+        mask_te = _periodos(df) == p_test
+        if mask_tr.sum() < 10 or mask_te.sum() == 0:
+            continue
+        modelo = _construir_modelo(params)
+        modelo.fit(df.loc[mask_tr, cols].fillna(0), df.loc[mask_tr, COL_VENTAS])
+        y_real = df.loc[mask_te, COL_VENTAS].values
+        y_pred = modelo.predict(df.loc[mask_te, cols].fillna(0)).clip(min=0)
+        y_base = _prediccion_baseline(df.loc[mask_te])
+        detalle.append({
+            "periodo": _fmt_periodo(p_test),
+            "n_train": int(mask_tr.sum()),
+            "ml": _metricas_error(y_real, y_pred),
+            "baseline": _metricas_error(y_real, y_base),
+        })
+        residuos.append(pd.DataFrame({COL_CN: df.loc[mask_te, COL_CN].values,
+                                      "y_real": y_real, "y_pred": y_pred, "y_base": y_base}))
+    if not detalle:
+        return {"folds": [], "ml": {}, "baseline": {}, "mejora_pct": None}, {}, pd.DataFrame()
+
+    res = pd.concat(residuos, ignore_index=True)
+    global_ml = _metricas_error(res["y_real"], res["y_pred"])
+    global_base = _metricas_error(res["y_real"], res["y_base"])
+    mejora = None
+    if global_base["rmse"] > 0:
+        mejora = round((global_base["rmse"] - global_ml["rmse"]) / global_base["rmse"] * 100, 1)
+    rmse_por_cn = (res.assign(_e2=(res["y_real"] - res["y_pred"]) ** 2)
+                      .groupby(COL_CN)["_e2"].mean().pow(0.5).round(3).to_dict())
+    resumen = {"folds": detalle, "ml": global_ml, "baseline": global_base, "mejora_pct": mejora}
+    return resumen, rmse_por_cn, res
+
 def entrenar_modelo_ml(df_features):
+    """Pipeline completo: split temporal -> tuning -> holdout -> backtest.
+
+    Devuelve (modelo, metricas, rmse_por_cn). El rmse_por_cn sale del backtest
+    walk-forward, no de un split aleatorio, porque de el depende el stock de
+    seguridad que se recomienda al farmaceutico.
+    """
     if not ML_AVAILABLE:
         return None, {"error": "XGBoost/sklearn no instalado"}, {}
     df = df_features.dropna(subset=[COL_VENTAS]).copy()
-    cols_disponibles = [c for c in FEATURE_COLS if c in df.columns]
-    if len(cols_disponibles) < 3 or len(df) < 20:
+    cols = [c for c in FEATURE_COLS if c in df.columns]
+    if len(cols) < 3 or df.empty or "Anio" not in df.columns:
         return None, {"error": "Datos insuficientes para entrenar"}, {}
-    X = df[cols_disponibles].fillna(0)
-    y = df[COL_VENTAS].values
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    model = XGBRegressor(n_estimators=200, max_depth=6, learning_rate=0.1,
-        subsample=0.8, colsample_bytree=0.8, random_state=42, verbosity=0, n_jobs=-1)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    r2 = r2_score(y_test, y_pred)
-    df_test = X_test.copy()
-    df_test["y_real"] = y_test; df_test["y_pred"] = y_pred
-    df_test[COL_CN] = df.loc[X_test.index, COL_CN].values
-    rmse_por_cn = df_test.groupby(COL_CN).apply(
-        lambda g: np.sqrt(((g["y_real"] - g["y_pred"])**2).mean())).to_dict()
-    imp = dict(zip(cols_disponibles, model.feature_importances_))
-    imp_sorted = dict(sorted(imp.items(), key=lambda x: x[1], reverse=True))
-    metricas = {"rmse": round(rmse, 2), "r2": round(r2, 4),
-                "n_train": len(X_train), "n_test": len(X_test),
-                "features": cols_disponibles, "importance": imp_sorted,
-                "fecha_entrenamiento": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                "n_registros_historico": len(df_features)}
-    return model, metricas, rmse_por_cn
+
+    df = df.sort_values(["Anio", "Mes", COL_CN]).reset_index(drop=True)
+    periodos = sorted(_periodos(df).unique())
+    if len(periodos) < MIN_PERIODOS_HISTORICO:
+        return None, {"error": f"Se necesitan al menos {MIN_PERIODOS_HISTORICO} meses de historico "
+                               f"(hay {len(periodos)}). Con menos, el error medido no es fiable."}, {}
+
+    # 1. Split temporal: los ultimos meses quedan fuera de todo el ajuste.
+    p_corte = periodos[-MESES_TEST_HOLDOUT]
+    df_train = df[_periodos(df) < p_corte].copy()
+    df_test = df[_periodos(df) >= p_corte].copy()
+    if df_train.empty or df_test.empty:
+        return None, {"error": "Historico insuficiente para reservar un holdout temporal"}, {}
+
+    # 2. Hiperparametros por validacion temporal, solo con datos de train.
+    mejores_params, ensayos = _ajustar_hiperparametros(df_train, cols)
+
+    # 3. Holdout: se mide una vez, sin haber influido en ninguna decision.
+    modelo_holdout = _construir_modelo(mejores_params)
+    modelo_holdout.fit(df_train[cols].fillna(0), df_train[COL_VENTAS])
+    pred_holdout = modelo_holdout.predict(df_test[cols].fillna(0)).clip(min=0)
+    met_holdout = _metricas_error(df_test[COL_VENTAS], pred_holdout)
+    met_holdout["r2"] = round(float(r2_score(df_test[COL_VENTAS], pred_holdout)), 4)
+    met_baseline_holdout = _metricas_error(df_test[COL_VENTAS], _prediccion_baseline(df_test))
+
+    # 4. Backtest walk-forward sobre todo el historico.
+    backtest, rmse_por_cn, residuos = _backtest_walk_forward(df, cols, mejores_params)
+
+    # 5. Modelo final: se reentrena con TODO, incluido el holdout ya medido.
+    modelo_final = _construir_modelo(mejores_params)
+    modelo_final.fit(df[cols].fillna(0), df[COL_VENTAS])
+    imp = dict(sorted(zip(cols, (float(v) for v in modelo_final.feature_importances_)),
+                      key=lambda x: x[1], reverse=True))
+
+    peores = []
+    if not residuos.empty:
+        peores = (residuos.assign(_err=(residuos["y_pred"] - residuos["y_real"]).abs())
+                          .groupby(COL_CN)["_err"].mean().nlargest(10).round(2)
+                          .reset_index().to_dict("records"))
+
+    metricas = {
+        "rmse": backtest["ml"].get("rmse", met_holdout["rmse"]),
+        "r2": met_holdout["r2"],
+        "n_train": int(len(df_train)), "n_test": int(len(df_test)),
+        "features": cols, "importance": imp,
+        "fecha_entrenamiento": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "n_registros_historico": len(df_features),
+        "validacion": "split temporal + backtest walk-forward",
+        "hiperparametros": mejores_params,
+        "ensayos_tuning": ensayos,
+        "holdout": met_holdout,
+        "holdout_baseline": met_baseline_holdout,
+        "backtest": backtest,
+        "peores_productos": peores,
+        "n_periodos": len(periodos),
+        "periodo_corte": _fmt_periodo(p_corte),
+    }
+    return modelo_final, metricas, rmse_por_cn
 
 def predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct=95):
     cols_disponibles = [c for c in FEATURE_COLS if c in df_features_futuro.columns]
@@ -239,13 +417,49 @@ def predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_p
     result["Prediccion_Final"] = np.ceil(result["Prediccion_Final"])
     return result
 
-def guardar_modelo_farmacia(model, metricas, rmse_por_cn):
+def construir_artefacto_pipeline(df_features, metricas):
+    """Deja por escrito cada fase del proceso ML para poder mostrarla en la UI."""
+    periodos = sorted(_periodos(df_features).unique()) if "Anio" in df_features.columns else []
+    return {
+        "fecha": metricas.get("fecha_entrenamiento"),
+        "datos": {
+            "n_filas": int(len(df_features)),
+            "n_productos": int(df_features[COL_CN].nunique()) if COL_CN in df_features.columns else 0,
+            "n_periodos": len(periodos),
+            "desde": _fmt_periodo(periodos[0]) if periodos else None,
+            "hasta": _fmt_periodo(periodos[-1]) if periodos else None,
+        },
+        "features": {
+            "usadas": metricas.get("features", []),
+            "importancia": metricas.get("importance", {}),
+        },
+        "split": {
+            "estrategia": "temporal (los ultimos meses nunca se usan para ajustar)",
+            "periodo_corte": metricas.get("periodo_corte"),
+            "n_train": metricas.get("n_train"),
+            "n_test": metricas.get("n_test"),
+            "meses_holdout": MESES_TEST_HOLDOUT,
+        },
+        "tuning": {
+            "metodo": f"validacion temporal de {MESES_VALIDACION} meses dentro del train",
+            "elegidos": metricas.get("hiperparametros", {}),
+            "ensayos": metricas.get("ensayos_tuning", []),
+        },
+        "holdout": metricas.get("holdout", {}),
+        "holdout_baseline": metricas.get("holdout_baseline", {}),
+        "backtest": metricas.get("backtest", {}),
+        "peores_productos": metricas.get("peores_productos", []),
+    }
+
+def guardar_modelo_farmacia(model, metricas, rmse_por_cn, df_features=None):
     ruta = ruta_farmacia_activa()
     if ruta is None or model is None:
         return
     joblib.dump(model, ruta / "modelo_ml.joblib")
     guardar_json_farmacia("modelo_metricas.json", metricas)
     guardar_json_farmacia("modelo_rmse_cn.json", rmse_por_cn)
+    if df_features is not None:
+        guardar_json_farmacia("modelo_pipeline.json", construir_artefacto_pipeline(df_features, metricas))
 
 def cargar_modelo_farmacia():
     ruta = ruta_farmacia_activa()
@@ -256,6 +470,15 @@ def cargar_modelo_farmacia():
         return None, None, None
     try:
         model = joblib.load(model_path)
+        # Un modelo guardado con features que ya no existen (p.ej. Stock_Ratio)
+        # haria estallar model.predict con un feature_names mismatch. Se trata
+        # como "sin modelo" para que la UI ofrezca reentrenar.
+        # feature_names_in_ es un ndarray: nada de "or []" aqui, comparar un
+        # array con or lanza ValueError y lo tragaria el except de abajo.
+        esperadas = getattr(model, "feature_names_in_", None)
+        esperadas = list(esperadas) if esperadas is not None else []
+        if any(f not in FEATURE_COLS for f in esperadas):
+            return None, {"obsoleto": True}, {}
         metricas = cargar_json_farmacia("modelo_metricas.json", default={})
         rmse_por_cn = cargar_json_farmacia("modelo_rmse_cn.json", default={})
         return model, metricas, rmse_por_cn
