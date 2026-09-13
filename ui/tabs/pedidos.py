@@ -57,6 +57,9 @@ def modulo_generador_pedidos():
         nivel_servicio = st.radio("Nivel de Servicio:", [95, 99], horizontal=True, key="nivel_srv",
             format_func=lambda x: f"{x}% {'(Eficiencia)' if x == 95 else '(Seguridad)'}")
 
+    params_actuales = {"lab_sel": lab_sel, "modo": modo, "meses": meses, "presupuesto": presupuesto,
+                       "motor": motor, "nivel_servicio": nivel_servicio}
+
     # --- Generar ---
     st.markdown("---")
     if st.button("\u26a1 Generar Pedido", type="primary", width='stretch'):
@@ -100,11 +103,20 @@ def modulo_generador_pedidos():
                 st.session_state["motor_usado"] = "Heuristico"
 
             st.session_state["pedido_generado"] = ped
+            st.session_state["pedido_params"] = params_actuales
+            st.session_state.pop("pedido_confirmado", None)
 
     # --- Resultados ---
     df_ped = st.session_state.get("pedido_generado")
     motor_usado = st.session_state.get("motor_usado", "")
     if df_ped is not None and not df_ped.empty:
+        params_ped = st.session_state.get("pedido_params", params_actuales)
+        lab_p, modo_p, meses_p, presupuesto_p = (params_ped["lab_sel"], params_ped["modo"],
+                                                 params_ped["meses"], params_ped["presupuesto"])
+        cambiados = params_ped != params_actuales
+        if cambiados:
+            st.warning("\u26a0\ufe0f Has cambiado laboratorio, modo, meses, presupuesto o motor desde que se genero "
+                       "este pedido. Se muestra el pedido generado; vuelve a generarlo para aplicar los cambios.")
         if motor_usado:
             st.info(f"Motor utilizado: **{motor_usado}**")
 
@@ -118,14 +130,14 @@ def modulo_generador_pedidos():
         with k3: render_kpi("Lineas", str(len(df_ped)))
         with k4: render_kpi("Unidades", f"{int(tu):,}".replace(",", "."))
 
-        if "Presupuesto" in modo and presupuesto > 0:
-            pct = min(100, safe_div(tc, presupuesto) * 100)
+        if "Presupuesto" in modo_p and presupuesto_p > 0:
+            pct = min(100, safe_div(tc, presupuesto_p) * 100)
             bar_col = COLORS["success"] if pct < 80 else (COLORS["warning"] if pct < 95 else COLORS["danger"])
             st.markdown(f"""
             <div style="margin:1rem 0;">
                 <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
                     <span style="font-size:0.85rem;font-weight:600;">Presupuesto</span>
-                    <span style="font-size:0.85rem;font-weight:600;">{format_eur(tc)} / {format_eur(presupuesto)}</span>
+                    <span style="font-size:0.85rem;font-weight:600;">{format_eur(tc)} / {format_eur(presupuesto_p)}</span>
                 </div>
                 <div class="budget-bar-container">
                     <div class="budget-bar-fill" style="width:{pct}%;background:{bar_col};">{pct:.0f}%</div>
@@ -165,7 +177,7 @@ def modulo_generador_pedidos():
                 st.dataframe(dd, width='stretch', hide_index=True)
 
         st.markdown("---")
-        lab_txt = lab_sel if lab_sel != "-- Todos --" else "Todos"
+        lab_txt = lab_p if lab_p != "-- Todos --" else "Todos"
         col_dl, col_confirm = st.columns(2)
         with col_dl:
             st.download_button(
@@ -175,16 +187,22 @@ def modulo_generador_pedidos():
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 type="primary", width='stretch')
         with col_confirm:
-            if st.button("\u2705 Confirmar Pedido", width='stretch', type="secondary"):
-                modo_conf = "presupuesto" if "Presupuesto" in modo else "cobertura"
-                df_vm_conf = obtener_ventas_media(meses_cobertura=meses)
+            confirmado = st.session_state.get("pedido_confirmado")
+            if confirmado:
+                st.success(confirmado)
+            # Una sola confirmacion por pedido generado: cada clic registraba otra vez el pedido,
+            # las promociones y el snapshot KPI, duplicando ahorro e inversion.
+            if st.button("\u2705 Confirmar Pedido", width='stretch', type="secondary",
+                         disabled=bool(confirmado) or cambiados) and not confirmado and not cambiados:
+                modo_conf = "presupuesto" if "Presupuesto" in modo_p else "cobertura"
+                df_vm_conf = obtener_ventas_media(meses_cobertura=meses_p)
                 registrar_promociones_pedido(df_ped)
                 # Registrar por laboratorio real (no "Todos")
-                if lab_sel == "-- Todos --" and COL_LAB in df_ped.columns:
+                if lab_p == "-- Todos --" and COL_LAB in df_ped.columns:
                     labs_en_pedido = df_ped[COL_LAB].dropna().unique()
                     for lab_real in labs_en_pedido:
                         df_ped_lab = df_ped[df_ped[COL_LAB] == lab_real]
-                        registrar_pedido_confirmado(df_ped_lab, str(lab_real), modo_conf, meses, df_vm_conf)
+                        registrar_pedido_confirmado(df_ped_lab, str(lab_real), modo_conf, meses_p, df_vm_conf)
                     reg_count = len(labs_en_pedido)
                     total_coste = round(float(df_ped["Coste_Con_Dto"].sum()), 2)
                     total_ahorro = round(float(df_ped["Ahorro"].sum()), 2)
@@ -201,14 +219,14 @@ def modulo_generador_pedidos():
                             if d < dias_min:
                                 dias_min = d
                                 cuello = str(row.get(COL_NOMBRE, ""))[:50]
-                    dias = round(dias_min) if dias_min < 999 else (meses or 2) * 30
+                    dias = round(dias_min) if dias_min < 999 else (meses_p or 2) * 30
                 else:
-                    lab_real = lab_sel if lab_sel != "-- Todos --" else "General"
-                    reg = registrar_pedido_confirmado(df_ped, lab_real, modo_conf, meses, df_vm_conf)
+                    lab_real = lab_p if lab_p != "-- Todos --" else "General"
+                    reg = registrar_pedido_confirmado(df_ped, lab_real, modo_conf, meses_p, df_vm_conf)
                     reg_count = 1
                     total_coste = reg["coste_total"] if reg else 0
                     total_ahorro = reg["ahorro_ofertas"] if reg else 0
-                    dias = reg["dias_cobertura_estimados"] if reg else (meses or 2) * 30
+                    dias = reg["dias_cobertura_estimados"] if reg else (meses_p or 2) * 30
                     cuello = reg["producto_cuello_botella"] if reg else ""
 
                 # Snapshot KPI automatico
@@ -222,8 +240,10 @@ def modulo_generador_pedidos():
 
                 prox = (date.today() + timedelta(days=max(0, dias - MARGEN_SEGURIDAD_DIAS))).strftime("%d/%m/%Y")
                 st.session_state.pop("alertas_red_cache", None)  # Invalidar cache tras confirmar
-                st.success(f"\u2705 Pedido confirmado ({reg_count} lab{'s' if reg_count > 1 else ''}) | "
-                          f"Cobertura: ~{dias} dias | Proximo pedido sugerido: {prox}")
+                msg_conf = (f"\u2705 Pedido confirmado ({reg_count} lab{'s' if reg_count > 1 else ''}) | "
+                            f"Cobertura: ~{dias} dias | Proximo pedido sugerido: {prox}")
+                st.session_state["pedido_confirmado"] = msg_conf
+                st.success(msg_conf)
                 if cuello:
                     st.caption(f"Cuello de botella: {cuello}")
                 if pedido_min > 0 and total_coste < pedido_min:
