@@ -1,0 +1,5018 @@
+[
+  {
+    "fecha": "2026-03-07 22:09",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:16",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:19",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:19",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08 12:20",
+    "n_productos": 42,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "valor_sobrestock": 5090.15,
+    "zombies": [
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "valor": 74.0
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "valor": 67.6
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "valor": 413.1
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "valor": 128.0
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "valor": 150.0
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "valor": 163.9
+      },
+      {
+        "cn": 700007,
+        "nombre": "Mustela Leche Corporal 500ml",
+        "valor": 30.4
+      },
+      {
+        "cn": 700008,
+        "nombre": "Suavinex Biberon 270ml",
+        "valor": 17.0
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "valor": 298.5
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "valor": 337.5
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "valor": 77.7
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "valor": 168.0
+      }
+    ],
+    "roturas": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "venta_media": 31.7
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "venta_media": 38.1
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "venta_media": 37.6
+      }
+    ],
+    "sobrestock": [
+      {
+        "cn": 654328,
+        "nombre": "Nolotil caps 575mg 20 caps",
+        "exceso": 448,
+        "valor": 1279.29
+      },
+      {
+        "cn": 654326,
+        "nombre": "Losartan 50mg 28 comp",
+        "exceso": 192,
+        "valor": 480.91
+      },
+      {
+        "cn": 700003,
+        "nombre": "Isdin FotoUltra Age Repair 50ml",
+        "exceso": 17,
+        "valor": 413.1
+      },
+      {
+        "cn": 700010,
+        "nombre": "Eucerin AtopiControl 250ml",
+        "exceso": 15,
+        "valor": 337.5
+      },
+      {
+        "cn": 700009,
+        "nombre": "Neutrogena Hydro Boost Gel 50ml",
+        "exceso": 15,
+        "valor": 298.5
+      },
+      {
+        "cn": 654343,
+        "nombre": "Lansoprazol 30mg 28 caps",
+        "exceso": 65,
+        "valor": 249.52
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "exceso": 111,
+        "valor": 177.67
+      },
+      {
+        "cn": 654345,
+        "nombre": "Ebastina 10mg 20 comp",
+        "exceso": 37,
+        "valor": 170.66
+      },
+      {
+        "cn": 700012,
+        "nombre": "Apivita Bee Radiant Serum",
+        "exceso": 6,
+        "valor": 168.0
+      },
+      {
+        "cn": 654323,
+        "nombre": "Atorvastatina 20mg 28 comp",
+        "exceso": 51,
+        "valor": 164.74
+      },
+      {
+        "cn": 700006,
+        "nombre": "Bioderma Sensibio H2O 500ml",
+        "exceso": 11,
+        "valor": 163.9
+      },
+      {
+        "cn": 700005,
+        "nombre": "CeraVe Crema Hidratante 340ml",
+        "exceso": 12,
+        "valor": 150.0
+      },
+      {
+        "cn": 700004,
+        "nombre": "Sesderma C-Vit Serum 30ml",
+        "exceso": 4,
+        "valor": 128.0
+      },
+      {
+        "cn": 654335,
+        "nombre": "Lorazepam 1mg 50 comp",
+        "exceso": 79,
+        "valor": 118.93
+      },
+      {
+        "cn": 654348,
+        "nombre": "Bisoprolol 2.5mg 28 comp",
+        "exceso": 45,
+        "valor": 86.37
+      },
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "exceso": 3,
+        "valor": 77.7
+      },
+      {
+        "cn": 700001,
+        "nombre": "Avene Hydrance Rica 40ml",
+        "exceso": 4,
+        "valor": 74.0
+      },
+      {
+        "cn": 654338,
+        "nombre": "Amlodipino 5mg 30 comp",
+        "exceso": 49,
+        "valor": 69.23
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "exceso": 27,
+        "valor": 68.36
+      },
+      {
+        "cn": 700002,
+        "nombre": "La Roche-Posay Effaclar Duo 40ml",
+        "exceso": 4,
+        "valor": 67.6
+      }
+    ]
+  }
+]

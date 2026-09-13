@@ -1,0 +1,178 @@
+[
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654321,
+    "molecula": "Omeprazol",
+    "laboratorio": "Cinfa",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654322,
+    "molecula": "Omeprazol",
+    "laboratorio": "Cinfa",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654324,
+    "molecula": "Atorvastatina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654325,
+    "molecula": "Metformina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.13,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654329,
+    "molecula": "Ibuprofeno",
+    "laboratorio": "Normon",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654330,
+    "molecula": "Paracetamol",
+    "laboratorio": "Cinfa",
+    "descuento": 0.17,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654331,
+    "molecula": "Amoxicilina",
+    "laboratorio": "Normon",
+    "descuento": 0.15,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654332,
+    "molecula": "Amoxicilina+Clavulanico",
+    "laboratorio": "Normon",
+    "descuento": 0.15,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654333,
+    "molecula": "Azitromicina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.13,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654347,
+    "molecula": "Furosemida",
+    "laboratorio": "Cinfa",
+    "descuento": 0.08,
+    "tier": "Tier 1"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654350,
+    "molecula": "Simvastatina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.13,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654321,
+    "molecula": "Omeprazol",
+    "laboratorio": "Cinfa",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654322,
+    "molecula": "Omeprazol",
+    "laboratorio": "Cinfa",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654324,
+    "molecula": "Atorvastatina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654325,
+    "molecula": "Metformina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.13,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654329,
+    "molecula": "Ibuprofeno",
+    "laboratorio": "Normon",
+    "descuento": 0.12,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654330,
+    "molecula": "Paracetamol",
+    "laboratorio": "Cinfa",
+    "descuento": 0.17,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654331,
+    "molecula": "Amoxicilina",
+    "laboratorio": "Normon",
+    "descuento": 0.15,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654332,
+    "molecula": "Amoxicilina+Clavulanico",
+    "laboratorio": "Normon",
+    "descuento": 0.15,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654333,
+    "molecula": "Azitromicina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.13,
+    "tier": "Tier 2"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654347,
+    "molecula": "Furosemida",
+    "laboratorio": "Cinfa",
+    "descuento": 0.08,
+    "tier": "Tier 1"
+  },
+  {
+    "fecha": "2026-03-08",
+    "codigo_nacional": 654350,
+    "molecula": "Simvastatina",
+    "laboratorio": "Cinfa",
+    "descuento": 0.13,
+    "tier": "Tier 2"
+  }
+]

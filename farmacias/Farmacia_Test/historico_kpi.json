@@ -1,0 +1,83 @@
+[
+  {
+    "fecha": "2026-03-07 20:29",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 33.19,
+    "coste_pedido": 2015.36
+  },
+  {
+    "fecha": "2026-03-07 20:29",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 33.19,
+    "coste_pedido": 2015.36
+  },
+  {
+    "fecha": "2026-03-07 20:29",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 33.19,
+    "coste_pedido": 2015.36
+  },
+  {
+    "fecha": "2026-03-07 22:04",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 56.06,
+    "coste_pedido": 1992.49
+  },
+  {
+    "fecha": "2026-03-07 22:09",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 95.4,
+    "coste_pedido": 1293.8
+  },
+  {
+    "fecha": "2026-03-08 12:17",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 142.27,
+    "coste_pedido": 1557.93
+  },
+  {
+    "fecha": "2026-03-08 12:19",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 162.31,
+    "coste_pedido": 1906.74
+  },
+  {
+    "fecha": "2026-03-08 12:19",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 142.27,
+    "coste_pedido": 1557.93
+  },
+  {
+    "fecha": "2026-03-09 22:54",
+    "health_score": 30.5,
+    "n_zombies": 12,
+    "valor_zombie": 1925.7,
+    "n_roturas": 3,
+    "ahorro_pedido": 162.31,
+    "coste_pedido": 1906.74
+  }
+]

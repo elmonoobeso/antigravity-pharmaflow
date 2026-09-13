@@ -1,0 +1,41 @@
+{
+  "horario": {
+    "lunes": {
+      "abre": true,
+      "apertura": "09:30",
+      "cierre": "21:30"
+    },
+    "martes": {
+      "abre": true,
+      "apertura": "09:30",
+      "cierre": "21:30"
+    },
+    "miercoles": {
+      "abre": true,
+      "apertura": "09:30",
+      "cierre": "21:30"
+    },
+    "jueves": {
+      "abre": true,
+      "apertura": "09:30",
+      "cierre": "21:30"
+    },
+    "viernes": {
+      "abre": true,
+      "apertura": "09:30",
+      "cierre": "21:30"
+    },
+    "sabado": {
+      "abre": true,
+      "apertura": "9:30",
+      "cierre": "21:30"
+    },
+    "domingo": {
+      "abre": false,
+      "apertura": "00:00",
+      "cierre": "00:00"
+    }
+  },
+  "festivos": [],
+  "excepciones_abiertas": []
+}

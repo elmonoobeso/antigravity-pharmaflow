@@ -1,0 +1,644 @@
+[
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Cinfa",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 23,
+    "producto_cuello_botella": "Furosemida 40mg 30 comp",
+    "coste_total": 1227.8,
+    "ahorro_ofertas": 158.05,
+    "n_lineas": 9,
+    "unidades_total": 654,
+    "productos": [
+      {
+        "cn": 654321,
+        "nombre": "Omeprazol 20mg 28 caps",
+        "molecula": "Omeprazol",
+        "cantidad": 119,
+        "pvl": 2.1,
+        "descuento": 0.12,
+        "coste": 219.91,
+        "venta_media_diaria": 2.46,
+        "dias_cobertura": 48.3
+      },
+      {
+        "cn": 654322,
+        "nombre": "Omeprazol 40mg 28 caps",
+        "molecula": "Omeprazol",
+        "cantidad": 27,
+        "pvl": 3.45,
+        "descuento": 0.12,
+        "coste": 81.97,
+        "venta_media_diaria": 0.85,
+        "dias_cobertura": 31.8
+      },
+      {
+        "cn": 654324,
+        "nombre": "Atorvastatina 40mg 28 comp",
+        "molecula": "Atorvastatina",
+        "cantidad": 43,
+        "pvl": 4.1,
+        "descuento": 0.12,
+        "coste": 155.14,
+        "venta_media_diaria": 1.04,
+        "dias_cobertura": 41.4
+      },
+      {
+        "cn": 654325,
+        "nombre": "Metformina 850mg 50 comp",
+        "molecula": "Metformina",
+        "cantidad": 68,
+        "pvl": 1.8,
+        "descuento": 0.13,
+        "coste": 106.49,
+        "venta_media_diaria": 1.53,
+        "dias_cobertura": 44.5
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "molecula": "Paracetamol",
+        "cantidad": 201,
+        "pvl": 1.6,
+        "descuento": 0.17,
+        "coste": 266.93,
+        "venta_media_diaria": 5.06,
+        "dias_cobertura": 39.7
+      },
+      {
+        "cn": 654333,
+        "nombre": "Azitromicina 500mg 3 comp",
+        "molecula": "Azitromicina",
+        "cantidad": 41,
+        "pvl": 3.1,
+        "descuento": 0.13,
+        "coste": 110.58,
+        "venta_media_diaria": 0.69,
+        "dias_cobertura": 59.3
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "molecula": "Cetirizina",
+        "cantidad": 106,
+        "pvl": 2.1,
+        "descuento": 0.0,
+        "coste": 222.6,
+        "venta_media_diaria": 1.24,
+        "dias_cobertura": 85.8
+      },
+      {
+        "cn": 654347,
+        "nombre": "Furosemida 40mg 30 comp",
+        "molecula": "Furosemida",
+        "cantidad": 14,
+        "pvl": 1.2,
+        "descuento": 0.08,
+        "coste": 15.46,
+        "venta_media_diaria": 0.61,
+        "dias_cobertura": 22.9
+      },
+      {
+        "cn": 654350,
+        "nombre": "Simvastatina 20mg 28 comp",
+        "molecula": "Simvastatina",
+        "cantidad": 35,
+        "pvl": 1.6,
+        "descuento": 0.13,
+        "coste": 48.72,
+        "venta_media_diaria": 1.05,
+        "dias_cobertura": 33.4
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Alfasigma",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 73,
+    "producto_cuello_botella": "Sintrom 4mg 20 comp",
+    "coste_total": 102.6,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 76,
+    "productos": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "molecula": "Acenocumarol",
+        "cantidad": 76,
+        "pvl": 1.35,
+        "descuento": 0.0,
+        "coste": 102.6,
+        "venta_media_diaria": 1.04,
+        "dias_cobertura": 73.0
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Normon",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 32,
+    "producto_cuello_botella": "Amoxicilina/Clav 875/125 12 comp",
+    "coste_total": 782.66,
+    "ahorro_ofertas": 122.74,
+    "n_lineas": 3,
+    "unidades_total": 539,
+    "productos": [
+      {
+        "cn": 654329,
+        "nombre": "Ibuprofeno 600mg 40 comp",
+        "molecula": "Ibuprofeno",
+        "cantidad": 363,
+        "pvl": 1.2,
+        "descuento": 0.12,
+        "coste": 383.33,
+        "venta_media_diaria": 4.1,
+        "dias_cobertura": 88.5
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "molecula": "Amoxicilina",
+        "cantidad": 150,
+        "pvl": 2.3,
+        "descuento": 0.15,
+        "coste": 293.25,
+        "venta_media_diaria": 1.25,
+        "dias_cobertura": 119.9
+      },
+      {
+        "cn": 654332,
+        "nombre": "Amoxicilina/Clav 875/125 12 comp",
+        "molecula": "Amoxicilina+Clavulanico",
+        "cantidad": 26,
+        "pvl": 4.8,
+        "descuento": 0.15,
+        "coste": 106.08,
+        "venta_media_diaria": 0.82,
+        "dias_cobertura": 31.8
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Prodes",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 31,
+    "producto_cuello_botella": "Diazepam 5mg 30 comp",
+    "coste_total": 20.4,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 17,
+    "productos": [
+      {
+        "cn": 654334,
+        "nombre": "Diazepam 5mg 30 comp",
+        "molecula": "Diazepam",
+        "cantidad": 17,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 20.4,
+        "venta_media_diaria": 0.55,
+        "dias_cobertura": 30.8
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "GSK",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 26,
+    "producto_cuello_botella": "Salbutamol inhaler 100mcg",
+    "coste_total": 125.4,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 2,
+    "unidades_total": 27,
+    "productos": [
+      {
+        "cn": 654341,
+        "nombre": "Salbutamol inhaler 100mcg",
+        "molecula": "Salbutamol",
+        "cantidad": 14,
+        "pvl": 3.2,
+        "descuento": 0.0,
+        "coste": 44.8,
+        "venta_media_diaria": 0.53,
+        "dias_cobertura": 26.5
+      },
+      {
+        "cn": 654346,
+        "nombre": "Fluticasona nasal spray",
+        "molecula": "Fluticasona",
+        "cantidad": 13,
+        "pvl": 6.2,
+        "descuento": 0.0,
+        "coste": 80.6,
+        "venta_media_diaria": 0.4,
+        "dias_cobertura": 32.2
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "AstraZeneca",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 130,
+    "producto_cuello_botella": "Budesonida/Formoterol Turbuhaler",
+    "coste_total": 269.5,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 7,
+    "productos": [
+      {
+        "cn": 654342,
+        "nombre": "Budesonida/Formoterol Turbuhaler",
+        "molecula": "Budesonida+Formoterol",
+        "cantidad": 7,
+        "pvl": 38.5,
+        "descuento": 0.0,
+        "coste": 269.5,
+        "venta_media_diaria": 0.05,
+        "dias_cobertura": 129.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "L'Oreal",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 60,
+    "producto_cuello_botella": "",
+    "coste_total": 77.7,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 3,
+    "productos": [
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "molecula": "Parafarmacia",
+        "cantidad": 3,
+        "pvl": 25.9,
+        "descuento": 0.0,
+        "coste": 77.7,
+        "venta_media_diaria": 0.0,
+        "dias_cobertura": 999
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Cinfa",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 23,
+    "producto_cuello_botella": "Furosemida 40mg 30 comp",
+    "coste_total": 1227.8,
+    "ahorro_ofertas": 158.05,
+    "n_lineas": 9,
+    "unidades_total": 654,
+    "productos": [
+      {
+        "cn": 654321,
+        "nombre": "Omeprazol 20mg 28 caps",
+        "molecula": "Omeprazol",
+        "cantidad": 119,
+        "pvl": 2.1,
+        "descuento": 0.12,
+        "coste": 219.91,
+        "venta_media_diaria": 2.46,
+        "dias_cobertura": 48.3
+      },
+      {
+        "cn": 654322,
+        "nombre": "Omeprazol 40mg 28 caps",
+        "molecula": "Omeprazol",
+        "cantidad": 27,
+        "pvl": 3.45,
+        "descuento": 0.12,
+        "coste": 81.97,
+        "venta_media_diaria": 0.85,
+        "dias_cobertura": 31.8
+      },
+      {
+        "cn": 654324,
+        "nombre": "Atorvastatina 40mg 28 comp",
+        "molecula": "Atorvastatina",
+        "cantidad": 43,
+        "pvl": 4.1,
+        "descuento": 0.12,
+        "coste": 155.14,
+        "venta_media_diaria": 1.04,
+        "dias_cobertura": 41.4
+      },
+      {
+        "cn": 654325,
+        "nombre": "Metformina 850mg 50 comp",
+        "molecula": "Metformina",
+        "cantidad": 68,
+        "pvl": 1.8,
+        "descuento": 0.13,
+        "coste": 106.49,
+        "venta_media_diaria": 1.53,
+        "dias_cobertura": 44.5
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "molecula": "Paracetamol",
+        "cantidad": 201,
+        "pvl": 1.6,
+        "descuento": 0.17,
+        "coste": 266.93,
+        "venta_media_diaria": 5.06,
+        "dias_cobertura": 39.7
+      },
+      {
+        "cn": 654333,
+        "nombre": "Azitromicina 500mg 3 comp",
+        "molecula": "Azitromicina",
+        "cantidad": 41,
+        "pvl": 3.1,
+        "descuento": 0.13,
+        "coste": 110.58,
+        "venta_media_diaria": 0.69,
+        "dias_cobertura": 59.3
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "molecula": "Cetirizina",
+        "cantidad": 106,
+        "pvl": 2.1,
+        "descuento": 0.0,
+        "coste": 222.6,
+        "venta_media_diaria": 1.24,
+        "dias_cobertura": 85.8
+      },
+      {
+        "cn": 654347,
+        "nombre": "Furosemida 40mg 30 comp",
+        "molecula": "Furosemida",
+        "cantidad": 14,
+        "pvl": 1.2,
+        "descuento": 0.08,
+        "coste": 15.46,
+        "venta_media_diaria": 0.61,
+        "dias_cobertura": 22.9
+      },
+      {
+        "cn": 654350,
+        "nombre": "Simvastatina 20mg 28 comp",
+        "molecula": "Simvastatina",
+        "cantidad": 35,
+        "pvl": 1.6,
+        "descuento": 0.13,
+        "coste": 48.72,
+        "venta_media_diaria": 1.05,
+        "dias_cobertura": 33.4
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Alfasigma",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 73,
+    "producto_cuello_botella": "Sintrom 4mg 20 comp",
+    "coste_total": 102.6,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 76,
+    "productos": [
+      {
+        "cn": 654327,
+        "nombre": "Sintrom 4mg 20 comp",
+        "molecula": "Acenocumarol",
+        "cantidad": 76,
+        "pvl": 1.35,
+        "descuento": 0.0,
+        "coste": 102.6,
+        "venta_media_diaria": 1.04,
+        "dias_cobertura": 73.0
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Normon",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 32,
+    "producto_cuello_botella": "Amoxicilina/Clav 875/125 12 comp",
+    "coste_total": 782.66,
+    "ahorro_ofertas": 122.74,
+    "n_lineas": 3,
+    "unidades_total": 539,
+    "productos": [
+      {
+        "cn": 654329,
+        "nombre": "Ibuprofeno 600mg 40 comp",
+        "molecula": "Ibuprofeno",
+        "cantidad": 363,
+        "pvl": 1.2,
+        "descuento": 0.12,
+        "coste": 383.33,
+        "venta_media_diaria": 4.1,
+        "dias_cobertura": 88.5
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "molecula": "Amoxicilina",
+        "cantidad": 150,
+        "pvl": 2.3,
+        "descuento": 0.15,
+        "coste": 293.25,
+        "venta_media_diaria": 1.25,
+        "dias_cobertura": 119.9
+      },
+      {
+        "cn": 654332,
+        "nombre": "Amoxicilina/Clav 875/125 12 comp",
+        "molecula": "Amoxicilina+Clavulanico",
+        "cantidad": 26,
+        "pvl": 4.8,
+        "descuento": 0.15,
+        "coste": 106.08,
+        "venta_media_diaria": 0.82,
+        "dias_cobertura": 31.8
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Prodes",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 31,
+    "producto_cuello_botella": "Diazepam 5mg 30 comp",
+    "coste_total": 20.4,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 17,
+    "productos": [
+      {
+        "cn": 654334,
+        "nombre": "Diazepam 5mg 30 comp",
+        "molecula": "Diazepam",
+        "cantidad": 17,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 20.4,
+        "venta_media_diaria": 0.55,
+        "dias_cobertura": 30.8
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "GSK",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 26,
+    "producto_cuello_botella": "Salbutamol inhaler 100mcg",
+    "coste_total": 125.4,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 2,
+    "unidades_total": 27,
+    "productos": [
+      {
+        "cn": 654341,
+        "nombre": "Salbutamol inhaler 100mcg",
+        "molecula": "Salbutamol",
+        "cantidad": 14,
+        "pvl": 3.2,
+        "descuento": 0.0,
+        "coste": 44.8,
+        "venta_media_diaria": 0.53,
+        "dias_cobertura": 26.5
+      },
+      {
+        "cn": 654346,
+        "nombre": "Fluticasona nasal spray",
+        "molecula": "Fluticasona",
+        "cantidad": 13,
+        "pvl": 6.2,
+        "descuento": 0.0,
+        "coste": 80.6,
+        "venta_media_diaria": 0.4,
+        "dias_cobertura": 32.2
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "AstraZeneca",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 130,
+    "producto_cuello_botella": "Budesonida/Formoterol Turbuhaler",
+    "coste_total": 269.5,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 7,
+    "productos": [
+      {
+        "cn": 654342,
+        "nombre": "Budesonida/Formoterol Turbuhaler",
+        "molecula": "Budesonida+Formoterol",
+        "cantidad": 7,
+        "pvl": 38.5,
+        "descuento": 0.0,
+        "coste": 269.5,
+        "venta_media_diaria": 0.05,
+        "dias_cobertura": 129.6
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "L'Oreal",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 60,
+    "producto_cuello_botella": "",
+    "coste_total": 77.7,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 3,
+    "productos": [
+      {
+        "cn": 700011,
+        "nombre": "Vichy Mineral 89 50ml",
+        "molecula": "Parafarmacia",
+        "cantidad": 3,
+        "pvl": 25.9,
+        "descuento": 0.0,
+        "coste": 77.7,
+        "venta_media_diaria": 0.0,
+        "dias_cobertura": 999
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Prodes",
+    "modo": "cobertura",
+    "meses_cobertura": 3,
+    "dias_cobertura_estimados": 65,
+    "producto_cuello_botella": "Diazepam 5mg 30 comp",
+    "coste_total": 43.2,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 36,
+    "productos": [
+      {
+        "cn": 654334,
+        "nombre": "Diazepam 5mg 30 comp",
+        "molecula": "Diazepam",
+        "cantidad": 36,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 43.2,
+        "venta_media_diaria": 0.55,
+        "dias_cobertura": 65.2
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Prodes",
+    "modo": "cobertura",
+    "meses_cobertura": 3,
+    "dias_cobertura_estimados": 65,
+    "producto_cuello_botella": "Diazepam 5mg 30 comp",
+    "coste_total": 43.2,
+    "ahorro_ofertas": 0.0,
+    "n_lineas": 1,
+    "unidades_total": 36,
+    "productos": [
+      {
+        "cn": 654334,
+        "nombre": "Diazepam 5mg 30 comp",
+        "molecula": "Diazepam",
+        "cantidad": 36,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 43.2,
+        "venta_media_diaria": 0.55,
+        "dias_cobertura": 65.2
+      }
+    ]
+  }
+]

@@ -1,0 +1,253 @@
+[
+  {
+    "fecha": "2026-03-07",
+    "laboratorio": "Cinfa",
+    "modo": "cobertura",
+    "meses_cobertura": 2,
+    "dias_cobertura_estimados": 23,
+    "producto_cuello_botella": "Furosemida 40mg 30 comp",
+    "coste_total": 1293.8,
+    "ahorro_ofertas": 95.4,
+    "n_lineas": 9,
+    "unidades_total": 651,
+    "productos": [
+      {
+        "cn": 654321,
+        "nombre": "Omeprazol 20mg 28 caps",
+        "molecula": "Omeprazol",
+        "cantidad": 123,
+        "pvl": 2.1,
+        "descuento": 0.1,
+        "coste": 232.47,
+        "venta_media_diaria": 2.46,
+        "dias_cobertura": 49.9
+      },
+      {
+        "cn": 654322,
+        "nombre": "Omeprazol 40mg 28 caps",
+        "molecula": "Omeprazol",
+        "cantidad": 30,
+        "pvl": 3.45,
+        "descuento": 0.1,
+        "coste": 93.15,
+        "venta_media_diaria": 0.85,
+        "dias_cobertura": 35.3
+      },
+      {
+        "cn": 654324,
+        "nombre": "Atorvastatina 40mg 28 comp",
+        "molecula": "Atorvastatina",
+        "cantidad": 41,
+        "pvl": 4.1,
+        "descuento": 0.08,
+        "coste": 154.65,
+        "venta_media_diaria": 1.04,
+        "dias_cobertura": 39.5
+      },
+      {
+        "cn": 654325,
+        "nombre": "Metformina 850mg 50 comp",
+        "molecula": "Metformina",
+        "cantidad": 66,
+        "pvl": 1.8,
+        "descuento": 0.08,
+        "coste": 109.3,
+        "venta_media_diaria": 1.53,
+        "dias_cobertura": 43.2
+      },
+      {
+        "cn": 654330,
+        "nombre": "Paracetamol 1g 40 comp",
+        "molecula": "Paracetamol",
+        "cantidad": 197,
+        "pvl": 1.6,
+        "descuento": 0.1,
+        "coste": 283.68,
+        "venta_media_diaria": 5.06,
+        "dias_cobertura": 38.9
+      },
+      {
+        "cn": 654333,
+        "nombre": "Azitromicina 500mg 3 comp",
+        "molecula": "Azitromicina",
+        "cantidad": 47,
+        "pvl": 3.1,
+        "descuento": 0.0,
+        "coste": 145.7,
+        "venta_media_diaria": 0.69,
+        "dias_cobertura": 68.0
+      },
+      {
+        "cn": 654344,
+        "nombre": "Cetirizina 10mg 20 comp",
+        "molecula": "Cetirizina",
+        "cantidad": 100,
+        "pvl": 2.1,
+        "descuento": 0.0,
+        "coste": 210.0,
+        "venta_media_diaria": 1.24,
+        "dias_cobertura": 80.9
+      },
+      {
+        "cn": 654347,
+        "nombre": "Furosemida 40mg 30 comp",
+        "molecula": "Furosemida",
+        "cantidad": 14,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 16.8,
+        "venta_media_diaria": 0.61,
+        "dias_cobertura": 22.9
+      },
+      {
+        "cn": 654350,
+        "nombre": "Simvastatina 20mg 28 comp",
+        "molecula": "Simvastatina",
+        "cantidad": 33,
+        "pvl": 1.6,
+        "descuento": 0.09,
+        "coste": 48.05,
+        "venta_media_diaria": 1.05,
+        "dias_cobertura": 31.5
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Normon",
+    "modo": "cobertura",
+    "meses_cobertura": 3,
+    "dias_cobertura_estimados": 22,
+    "producto_cuello_botella": "Sertralina 50mg 30 comp",
+    "coste_total": 1557.93,
+    "ahorro_ofertas": 142.27,
+    "n_lineas": 5,
+    "unidades_total": 928,
+    "productos": [
+      {
+        "cn": 654329,
+        "nombre": "Ibuprofeno 600mg 40 comp",
+        "molecula": "Ibuprofeno",
+        "cantidad": 574,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 688.8,
+        "venta_media_diaria": 4.1,
+        "dias_cobertura": 140.0
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "molecula": "Amoxicilina",
+        "cantidad": 228,
+        "pvl": 2.3,
+        "descuento": 0.16,
+        "coste": 440.5,
+        "venta_media_diaria": 1.25,
+        "dias_cobertura": 182.2
+      },
+      {
+        "cn": 654332,
+        "nombre": "Amoxicilina/Clav 875/125 12 comp",
+        "molecula": "Amoxicilina+Clavulanico",
+        "cantidad": 76,
+        "pvl": 4.8,
+        "descuento": 0.16,
+        "coste": 306.43,
+        "venta_media_diaria": 0.82,
+        "dias_cobertura": 93.1
+      },
+      {
+        "cn": 654337,
+        "nombre": "Sertralina 50mg 30 comp",
+        "molecula": "Sertralina",
+        "cantidad": 14,
+        "pvl": 2.3,
+        "descuento": 0.0,
+        "coste": 32.2,
+        "venta_media_diaria": 0.64,
+        "dias_cobertura": 21.8
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "molecula": "Pantoprazol",
+        "cantidad": 36,
+        "pvl": 2.5,
+        "descuento": 0.0,
+        "coste": 90.0,
+        "venta_media_diaria": 1.42,
+        "dias_cobertura": 25.3
+      }
+    ]
+  },
+  {
+    "fecha": "2026-03-08",
+    "laboratorio": "Normon",
+    "modo": "cobertura",
+    "meses_cobertura": 3,
+    "dias_cobertura_estimados": 22,
+    "producto_cuello_botella": "Sertralina 50mg 30 comp",
+    "coste_total": 1557.93,
+    "ahorro_ofertas": 142.27,
+    "n_lineas": 5,
+    "unidades_total": 928,
+    "productos": [
+      {
+        "cn": 654329,
+        "nombre": "Ibuprofeno 600mg 40 comp",
+        "molecula": "Ibuprofeno",
+        "cantidad": 574,
+        "pvl": 1.2,
+        "descuento": 0.0,
+        "coste": 688.8,
+        "venta_media_diaria": 4.1,
+        "dias_cobertura": 140.0
+      },
+      {
+        "cn": 654331,
+        "nombre": "Amoxicilina 500mg 30 caps",
+        "molecula": "Amoxicilina",
+        "cantidad": 228,
+        "pvl": 2.3,
+        "descuento": 0.16,
+        "coste": 440.5,
+        "venta_media_diaria": 1.25,
+        "dias_cobertura": 182.2
+      },
+      {
+        "cn": 654332,
+        "nombre": "Amoxicilina/Clav 875/125 12 comp",
+        "molecula": "Amoxicilina+Clavulanico",
+        "cantidad": 76,
+        "pvl": 4.8,
+        "descuento": 0.16,
+        "coste": 306.43,
+        "venta_media_diaria": 0.82,
+        "dias_cobertura": 93.1
+      },
+      {
+        "cn": 654337,
+        "nombre": "Sertralina 50mg 30 comp",
+        "molecula": "Sertralina",
+        "cantidad": 14,
+        "pvl": 2.3,
+        "descuento": 0.0,
+        "coste": 32.2,
+        "venta_media_diaria": 0.64,
+        "dias_cobertura": 21.8
+      },
+      {
+        "cn": 654340,
+        "nombre": "Pantoprazol 20mg 28 comp",
+        "molecula": "Pantoprazol",
+        "cantidad": 36,
+        "pvl": 2.5,
+        "descuento": 0.0,
+        "coste": 90.0,
+        "venta_media_diaria": 1.42,
+        "dias_cobertura": 25.3
+      }
+    ]
+  }
+]
