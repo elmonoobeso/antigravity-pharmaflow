@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from config.settings import COL_CN, COL_LAB, COL_NOMBRE, COL_PVL, COL_STOCK, HEALTH_SCORE_MESES_DEFAULT
-from core.business import calcular_benchmark_hs, calcular_coste_oportunidad, calcular_health_score, calcular_roi_laboratorios, calcular_rotacion_stock, calcular_roturas, calcular_stock_uvi, calcular_stock_zombie, cargar_productos_protegidos, generar_pedido_cobertura, obtener_historico_kpi, obtener_ventas_media, registrar_snapshot_kpi
+from core.business import calcular_benchmark_hs, calcular_coste_oportunidad, calcular_health_score, calcular_roi_laboratorios, calcular_rotacion_stock, calcular_roturas, calcular_sobrestock, calcular_stock_uvi, calcular_stock_zombie, cargar_productos_protegidos, generar_pedido_cobertura, obtener_historico_kpi, obtener_ventas_media, registrar_snapshot_kpi
 from data.io import cargar_json_farmacia
 from ml.engine import obtener_modelo_cacheado
 from ui.charts import grafico_calendario_reposicion, grafico_dinero_en_riesgo_donut, grafico_gauge_health, grafico_historico_kpi, grafico_importancia_features, grafico_roi_laboratorios, grafico_waterfall_ahorro
@@ -81,7 +81,8 @@ def modulo_business_intelligence():
     st.markdown("---"); st.markdown("#### \U0001f4b0 Dinero en Riesgo")
     c_dr, c_top = st.columns([3, 2])
     with c_dr:
-        fig_dr = grafico_dinero_en_riesgo_donut(dz, 0, coste_op)
+        val_sob, _ = calcular_sobrestock(df_inv, df_vm, excluir_cns=df_z[COL_CN] if not df_z.empty else ())
+        fig_dr = grafico_dinero_en_riesgo_donut(dz, val_sob, coste_op)
         if fig_dr:
             st.plotly_chart(fig_dr, width='stretch', config={"displayModeBar":False})
         else:

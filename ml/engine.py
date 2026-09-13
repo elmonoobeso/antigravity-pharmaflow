@@ -13,7 +13,7 @@ from config.settings import (
 )
 from core.business import (
     calcular_horas_mes, calcular_dias_abiertos_mes,
-    generar_pedido_cobertura, crecimiento_12m
+    generar_pedido_cobertura, generar_pedido_presupuesto, crecimiento_12m
 )
 import streamlit as st
 
@@ -753,23 +753,32 @@ def predecir_demanda_ensemble(model, df_features_futuro, rmse_por_cn,
     result = result.drop(columns=["_std", "_peso_ml", "Pred_Heuristico"], errors="ignore")
     return result
 
+def _pedido_desde_demanda(df_inventario, df_vm, meses_cobertura, nivel_servicio_pct,
+                          df_ofertas, productos_protegidos, presupuesto):
+    """Pedido a partir de la demanda prevista: por cobertura o, si hay presupuesto, recortado a el."""
+    z = Z_SCORES.get(nivel_servicio_pct, 1.645)
+    if presupuesto:
+        return generar_pedido_presupuesto(df_inventario, df_vm, presupuesto, meses_cobertura,
+                                          df_ofertas, productos_protegidos, nivel_servicio=z)
+    return generar_pedido_cobertura(df_inventario, df_vm, meses_cobertura, df_ofertas,
+                                    nivel_servicio=z, productos_protegidos=productos_protegidos)
+
 def generar_pedido_ml(df_inventario, model, df_features_futuro, rmse_por_cn,
                       meses_cobertura, nivel_servicio_pct, df_ofertas=None,
-                      productos_protegidos=None):
+                      productos_protegidos=None, presupuesto=None):
     pred = predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct)
     df_vm_ml = pred[[COL_CN, "Prediccion_Media", "RMSE_Producto"]].copy()
     df_vm_ml = df_vm_ml.rename(columns={
         "Prediccion_Media": "Venta_Media_Mensual",
         "RMSE_Producto": "Venta_Std_Mensual",
     })
-    return generar_pedido_cobertura(
-        df_inventario, df_vm_ml, meses_cobertura, df_ofertas,
-        nivel_servicio=Z_SCORES.get(nivel_servicio_pct, 1.645),
-        productos_protegidos=productos_protegidos)
+    return _pedido_desde_demanda(df_inventario, df_vm_ml, meses_cobertura, nivel_servicio_pct,
+                                 df_ofertas, productos_protegidos, presupuesto)
 
 def generar_pedido_ensemble(df_inventario, model, df_features_futuro, rmse_por_cn,
                             df_ventas_media_heuristico, meses_cobertura,
-                            nivel_servicio_pct, df_ofertas=None, productos_protegidos=None):
+                            nivel_servicio_pct, df_ofertas=None, productos_protegidos=None,
+                            presupuesto=None):
     pred = predecir_demanda_ensemble(
         model, df_features_futuro, rmse_por_cn,
         df_ventas_media_heuristico, nivel_servicio_pct)
@@ -778,7 +787,5 @@ def generar_pedido_ensemble(df_inventario, model, df_features_futuro, rmse_por_c
         "Prediccion_Media": "Venta_Media_Mensual",
         "RMSE_Producto": "Venta_Std_Mensual",
     })
-    return generar_pedido_cobertura(
-        df_inventario, df_vm, meses_cobertura, df_ofertas,
-        nivel_servicio=Z_SCORES.get(nivel_servicio_pct, 1.645),
-        productos_protegidos=productos_protegidos)
+    return _pedido_desde_demanda(df_inventario, df_vm, meses_cobertura, nivel_servicio_pct,
+                                 df_ofertas, productos_protegidos, presupuesto)

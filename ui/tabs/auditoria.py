@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-from config.settings import COL_CN, COL_LAB, COL_NOMBRE, COL_PVL, COL_STOCK, HEALTH_SCORE_MESES_DEFAULT
-from core.business import calcular_analisis_abc, calcular_conciliacion_fisico_logico, calcular_coste_oportunidad, calcular_dependencia_estacional, calcular_flujo_caja_inventario, calcular_health_score, calcular_indice_servicio, calcular_matriz_rentabilidad_gmroi, calcular_riesgo_caducidad, calcular_stock_uvi, calcular_stock_zombie, obtener_historico_auditorias, obtener_ventas_media
+from config.settings import COL_CN, COL_LAB, COL_NOMBRE, COL_STOCK, HEALTH_SCORE_MESES_DEFAULT
+from core.business import calcular_analisis_abc, calcular_conciliacion_fisico_logico, calcular_coste_oportunidad, calcular_dependencia_estacional, calcular_flujo_caja_inventario, calcular_health_score, calcular_indice_servicio, calcular_matriz_rentabilidad_gmroi, calcular_riesgo_caducidad, calcular_sobrestock, calcular_stock_uvi, calcular_stock_zombie, obtener_historico_auditorias, obtener_ventas_media
 from ui.charts import grafico_concentracion_riesgo, grafico_dinero_en_riesgo_donut, grafico_distribucion_laboratorios, grafico_estacionalidad_liquidez, grafico_gauge_health, grafico_heatmap_cobertura, grafico_long_tail
 from ui.components import render_kpi
 from utils.helpers import format_eur
@@ -39,14 +39,13 @@ def modulo_auditoria():
     with c2:
         render_kpi("Índice Servicio (Fill Rate)", f"{fill_rate:.1f}%", f"{n_roturas_hab} roturas / {total_con_demanda} actvs", fill_rate>90)
         st.markdown("<br>", unsafe_allow_html=True)
-        render_kpi("Caducidades (<6m)", format_eur(val_cad), "Real" if cad_real else "Estimado (Mock)", cad_real)
+        if cad_real:
+            render_kpi("Caducidades (<6m)", format_eur(val_cad), f"{prods_cad} productos", False)
+        else:
+            render_kpi("Caducidades (<6m)", "Sin datos", "Anade Fecha_Caducidad al inventario")
     with c3:
-        # Calcular sobrestock para meter al donut
-        df_m = df_inv.merge(df_vm, on=COL_CN, how="left")
-        df_m["Venta_Media_Mensual"] = df_m["Venta_Media_Mensual"].fillna(0)
-        df_m["Stock_Ideal"] = df_m["Venta_Media_Mensual"] * HEALTH_SCORE_MESES_DEFAULT
-        df_m["Exceso"] = (df_m[COL_STOCK] - df_m["Stock_Ideal"]).clip(lower=0)
-        val_sob = (df_m["Exceso"] * df_m.get(COL_PVL, pd.Series(0))).fillna(0).sum()
+        # Sobrestock sin el stock zombie, que ya tiene su porcion en el donut.
+        val_sob, _ = calcular_sobrestock(df_inv, df_vm, excluir_cns=df_z[COL_CN] if not df_z.empty else ())
         
         fig_donut = grafico_dinero_en_riesgo_donut(dz, val_sob, c_op)
         if fig_donut:
@@ -112,7 +111,11 @@ def modulo_auditoria():
             fig_heat = grafico_heatmap_cobertura(df_inv, df_vm)
             if fig_heat: st.plotly_chart(fig_heat, width='stretch', config={"displayModeBar":False}, key="heat_auditoria")
         with c_cr:
-            df_exceso = df_m[df_m["Exceso"] > 0]
+            # Zombie y UVI ya tienen su barra: el sobrestock no repite ese stock.
+            excluir = set(df_z[COL_CN]) if not df_z.empty else set()
+            if not df_u.empty:
+                excluir |= set(df_u[COL_CN])
+            _, df_exceso = calcular_sobrestock(df_inv, df_vm, excluir_cns=excluir)
             fig_conc = grafico_concentracion_riesgo(df_z, df_u, df_exceso)
             if fig_conc: st.plotly_chart(fig_conc, width='stretch', config={"displayModeBar":False}, key="conc_auditoria")
             

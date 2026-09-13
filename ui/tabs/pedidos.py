@@ -72,6 +72,7 @@ def modulo_generador_pedidos():
                 perfil_f = cargar_perfil_farmacia()
                 cal_f = cargar_calendario_farmacia()
                 df_hist_imp = imputar_stockouts(st.session_state["historico"], df_inv)
+                ppto_ml = presupuesto if "Presupuesto" in modo else None
                 # Features de los meses que cubre el pedido (no del ultimo mes del historico).
                 df_futuro, meses_sin_datos = construir_features_futuras(
                     model, df_hist_imp, df_inv, perfil_f, cal_f, df_ofertas, meses)
@@ -86,12 +87,12 @@ def modulo_generador_pedidos():
                     df_vm_heur = obtener_ventas_media(meses_cobertura=meses)
                     ped = generar_pedido_ensemble(df_f, model, df_futuro, rmse_cn,
                                                   df_vm_heur, meses, nivel_servicio,
-                                                  df_ofertas, protegidos)
-                    st.session_state["motor_usado"] = "Ensemble"
+                                                  df_ofertas, protegidos, presupuesto=ppto_ml)
+                    st.session_state["motor_usado"] = "Ensemble" + (" (presupuesto)" if ppto_ml else "")
                 else:
                     ped = generar_pedido_ml(df_f, model, df_futuro, rmse_cn, meses,
-                                            nivel_servicio, df_ofertas, protegidos)
-                    st.session_state["motor_usado"] = "ML"
+                                            nivel_servicio, df_ofertas, protegidos, presupuesto=ppto_ml)
+                    st.session_state["motor_usado"] = "ML" + (" (presupuesto)" if ppto_ml else "")
             else:
                 df_vm = obtener_ventas_media(meses_cobertura=meses)
                 if "Cobertura" in modo:
@@ -199,27 +200,17 @@ def modulo_generador_pedidos():
                 registrar_promociones_pedido(df_ped)
                 # Registrar por laboratorio real (no "Todos")
                 if lab_p == "-- Todos --" and COL_LAB in df_ped.columns:
-                    labs_en_pedido = df_ped[COL_LAB].dropna().unique()
-                    for lab_real in labs_en_pedido:
-                        df_ped_lab = df_ped[df_ped[COL_LAB] == lab_real]
-                        registrar_pedido_confirmado(df_ped_lab, str(lab_real), modo_conf, meses_p, df_vm_conf)
-                    reg_count = len(labs_en_pedido)
+                    labs_ped = df_ped[COL_LAB].fillna("General")
+                    regs = [registrar_pedido_confirmado(df_ped[labs_ped == lab_real], str(lab_real), modo_conf, meses_p, df_vm_conf)
+                            for lab_real in labs_ped.unique()]
+                    regs = [r for r in regs if r]
+                    reg_count = len(regs)
                     total_coste = round(float(df_ped["Coste_Con_Dto"].sum()), 2)
                     total_ahorro = round(float(df_ped["Ahorro"].sum()), 2)
-                    # Calcular cobertura global (minimo de todos)
-                    vm_map_conf = df_vm_conf.set_index(COL_CN)["Venta_Media_Mensual"].to_dict() if not df_vm_conf.empty else {}
-                    dias_min = 999
-                    cuello = ""
-                    for _, row in df_ped.iterrows():
-                        cn = row.get(COL_CN, "")
-                        cant = int(row.get("Cantidad_A_Pedir", 0))
-                        vmd = vm_map_conf.get(cn, 0) / 30.44
-                        if vmd > 0:
-                            d = cant / vmd
-                            if d < dias_min:
-                                dias_min = d
-                                cuello = str(row.get(COL_NOMBRE, ""))[:50]
-                    dias = round(dias_min) if dias_min < 999 else (meses_p or 2) * 30
+                    # Cobertura global = el laboratorio que antes se agota (stock actual + pedido).
+                    reg_min = min(regs, key=lambda r: r["dias_cobertura_estimados"]) if regs else None
+                    dias = reg_min["dias_cobertura_estimados"] if reg_min else (meses_p or 2) * 30
+                    cuello = reg_min["producto_cuello_botella"] if reg_min else ""
                 else:
                     lab_real = lab_p if lab_p != "-- Todos --" else "General"
                     reg = registrar_pedido_confirmado(df_ped, lab_real, modo_conf, meses_p, df_vm_conf)

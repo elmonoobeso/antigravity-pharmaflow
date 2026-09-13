@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, date, timedelta
 import pandas as pd
-from config.settings import BASE_DIR, COL_CN, COL_LAB, COL_NOMBRE, COL_PVL, COL_MOLECULA
+from config.settings import BASE_DIR, COL_CN, COL_LAB, COL_NOMBRE, COL_PVL, COL_MOLECULA, COL_STOCK
 from data.io import ruta_farmacia_activa
 from core.business import aplicar_ofertas_indexado, construir_indice_ofertas, buscar_oferta_por_indice
 
@@ -93,12 +93,17 @@ def registrar_pedido_confirmado(df_pedido, laboratorio, modo, meses_cobertura, d
         pvl = float(row.get("Precio_Unitario", row.get(COL_PVL, 0)))
         molecula = str(row.get(COL_MOLECULA, ""))
         dto = float(row.get("Descuento_Aplicado", 0))
-        vmd = vm_map.get(cn, 0) / 30.44  # mensual a diaria (media precisa)
-        dias_cob = round(cant / vmd, 1) if vmd > 0 else 999
+        # Demanda del propio pedido (heuristica o ML) si viene en la linea; si no, la media heuristica.
+        vmm = row.get("Venta_Media_Mensual")
+        vmm = float(vmm) if vmm is not None and pd.notna(vmm) else vm_map.get(cn, 0)
+        vmd = vmm / 30.44  # mensual a diaria (media precisa)
+        stock = max(0.0, float(row.get(COL_STOCK, 0) or 0))
+        # Dias hasta agotar lo que habra en la farmacia: stock actual + lo que llega con el pedido.
+        dias_cob = round((stock + cant) / vmd, 1) if vmd > 0 else 999
         productos.append({
             "cn": cn, "nombre": str(row.get(COL_NOMBRE, ""))[:50],
             "molecula": molecula,
-            "cantidad": cant, "pvl": round(pvl, 4),
+            "cantidad": cant, "stock_actual": int(stock), "pvl": round(pvl, 4),
             "descuento": round(dto, 4),
             "coste": round(float(row.get("Coste_Con_Dto", 0)), 2),
             "venta_media_diaria": round(vmd, 2), "dias_cobertura": dias_cob,

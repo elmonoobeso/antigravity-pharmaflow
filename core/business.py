@@ -97,10 +97,8 @@ def registrar_snapshot_auditoria(df_inventario, df_ventas_media):
                     "venta_media": round(float(r["Venta_Media_Mensual"]), 1)}
                    for _, r in roturas.head(20).iterrows()]
 
-    df["Stock_Ideal"] = df["Venta_Media_Mensual"] * HEALTH_SCORE_MESES_DEFAULT
-    df["Exceso"] = (df[COL_STOCK] - df["Stock_Ideal"]).clip(lower=0)
-    df["Valor_Exceso"] = (df["Exceso"] * df.get(COL_PVL, pd.Series(0))).fillna(0)
-    sobr = df[df["Exceso"] > 0].nlargest(20, "Valor_Exceso")
+    valor_sobrestock, df_exceso = calcular_sobrestock(df_inventario, df_ventas_media, excluir_cns=zombies[COL_CN])
+    sobr = df_exceso.nlargest(20, "Valor_Exceso")
     sobrestock_list = [{"cn": r[COL_CN], "nombre": str(r.get(COL_NOMBRE, ""))[:50],
                         "exceso": int(r["Exceso"]), "valor": round(float(r["Valor_Exceso"]), 2)}
                        for _, r in sobr.iterrows()]
@@ -111,7 +109,7 @@ def registrar_snapshot_auditoria(df_inventario, df_ventas_media):
         "n_zombies": len(zombies),
         "valor_zombie": valor_zombie_total,
         "n_roturas": len(roturas),
-        "valor_sobrestock": round(float(df["Valor_Exceso"].sum()), 2),
+        "valor_sobrestock": valor_sobrestock,
         "zombies": zombie_list,
         "roturas": rotura_list,
         "sobrestock": sobrestock_list,
@@ -390,6 +388,22 @@ def calcular_stock_zombie(df_inventario, df_ventas, meses_sin_venta=12):
     df_z["Valor_Inmovilizado"] = (df_z[COL_STOCK] * df_z.get(COL_PVL, pd.Series(0))).fillna(0)
     return df_z
 
+def calcular_sobrestock(df_inventario, df_ventas_media, excluir_cns=(), meses_objetivo=HEALTH_SCORE_MESES_DEFAULT):
+    """Exceso de stock sobre `meses_objetivo` de venta, en unidades y euros.
+
+    `excluir_cns`: productos ya contados como zombie/UVI. Sin excluirlos, su stock
+    entero aparecia tambien como sobrestock y el dinero en riesgo se sumaba dos veces.
+    """
+    df = df_inventario.merge(df_ventas_media[[COL_CN, "Venta_Media_Mensual"]], on=COL_CN, how="left")
+    df["Venta_Media_Mensual"] = df["Venta_Media_Mensual"].fillna(0)
+    df = df[~df[COL_CN].isin(set(excluir_cns))].copy()
+    df["Stock_Ideal"] = df["Venta_Media_Mensual"] * meses_objetivo
+    df["Exceso"] = (df[COL_STOCK] - df["Stock_Ideal"]).clip(lower=0)
+    pvl = df[COL_PVL] if COL_PVL in df.columns else pd.Series(0.0, index=df.index)
+    df["Valor_Exceso"] = (df["Exceso"] * pvl).fillna(0)
+    df_exceso = df[df["Exceso"] > 0]
+    return round(float(df_exceso["Valor_Exceso"].sum()), 2), df_exceso
+
 def calcular_roturas(df_inventario, df_ventas_media):
     df_m = df_inventario.merge(df_ventas_media, on=COL_CN, how="left")
     df_m["Venta_Media_Mensual"] = df_m["Venta_Media_Mensual"].fillna(0)
@@ -553,24 +567,21 @@ def calcular_analisis_abc(df_inventario, df_ventas_media):
     return df
 
 def calcular_riesgo_caducidad(df_inventario):
-    """Simula o calcula el valor en riesgo por caducidad en < 6 meses."""
+    """Valor en riesgo por caducidad en < 6 meses. Solo con fechas de caducidad reales:
+    sin ellas devuelve (None, 0, False) y no se muestra ni se usa ninguna estimacion."""
     df = df_inventario.copy()
-    if df.empty: return 0.0, 0, False
+    if df.empty: return None, 0, False
     
-    if "Fecha_Caducidad" in df.columns:
-        df["Fecha_Caducidad"] = pd.to_datetime(df["Fecha_Caducidad"], errors="coerce")
-        limite = datetime.now() + relativedelta(months=6)
-        df_cad = df[df["Fecha_Caducidad"] <= limite]
-        valor = (df_cad[COL_STOCK] * df_cad.get(COL_PVL, pd.Series(0))).fillna(0).sum()
-        return valor, len(df_cad), True
-    else:
-        # MOCK realista para auditorías donde aún no se sube la caducidad (se asume un 3% del stock inmovilizado zombie/UVI)
-        if COL_PVL in df.columns:
-            valor_total = (df[COL_STOCK] * df[COL_PVL]).fillna(0).sum()
-            riesgo_estimado = valor_total * 0.03  # 3% historico de caducos perdidos
-            prods = max(1, len(df) // 40)
-            return riesgo_estimado, prods, False
-        return 0.0, 0, False
+    if "Fecha_Caducidad" not in df.columns:
+        return None, 0, False
+    df["Fecha_Caducidad"] = pd.to_datetime(df["Fecha_Caducidad"], errors="coerce", dayfirst=True)
+    if df["Fecha_Caducidad"].notna().sum() == 0:
+        return None, 0, False
+    limite = datetime.now() + relativedelta(months=6)
+    df_cad = df[df["Fecha_Caducidad"] <= limite]
+    pvl = df_cad[COL_PVL] if COL_PVL in df_cad.columns else pd.Series(0.0, index=df_cad.index)
+    valor = float((df_cad[COL_STOCK] * pvl).fillna(0).sum())
+    return valor, len(df_cad), True
 
 def calcular_matriz_rentabilidad_gmroi(df_inventario, df_ventas_media):
     """Calcula GMROI proxy (Margen * Rotación) si existe PVP y PVL."""
@@ -892,9 +903,9 @@ def max_unidades_en_presupuesto(deseadas, precio, tiers, margen):
     return mejor
 
 def generar_pedido_presupuesto(df_inventario, df_ventas_media, presupuesto, meses_cobertura,
-                                df_ofertas=None, productos_protegidos=None):
+                                df_ofertas=None, productos_protegidos=None, nivel_servicio=1.65):
     df_ideal = generar_pedido_cobertura(df_inventario, df_ventas_media, meses_cobertura, df_ofertas,
-                                         productos_protegidos=productos_protegidos)
+                                         nivel_servicio=nivel_servicio, productos_protegidos=productos_protegidos)
     if df_ideal.empty: return df_ideal
     cn_prot = {normalizar_cn(pp.get("codigo_nacional")) for pp in (productos_protegidos or [])}
     df_p = df_ideal[df_ideal[COL_CN].isin(cn_prot)].copy()
