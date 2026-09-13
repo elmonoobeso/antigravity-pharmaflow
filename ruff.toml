@@ -6,8 +6,9 @@
 
 target-version = "py314"
 line-length = 140
-exclude = ["app (5).py", "extract_tabs_and_charts.py", "append_business.py", "cold.py"]
+exclude = ["_legacy"]
 
 [lint]
 select = ["F", "E9"]
-ignore = ["F403", "F405"]  # 'import *' pendiente de eliminar en Fase 3
+# Sin excepciones: F403/F405 ('import *') vuelven a estar activas. Los imports
+# comodin son los que impedian detectar nombres no definidos.
