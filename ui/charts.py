@@ -402,6 +402,20 @@ def grafico_walk_forward(pipeline):
                       xaxis=dict(gridcolor="#E2E8F0"))
     return fig
 
+def grafico_horizonte(bh):
+    """Error por mes de horizonte al predecir encadenado, ML frente a baseline."""
+    pasos = (bh or {}).get("pasos", [])
+    if not pasos:
+        return None
+    etiquetas = [f"Mes +{x['h']} ({x['periodo']})" for x in pasos]
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=etiquetas, y=[x["ml"]["rmse"] for x in pasos], name="ML", marker_color=COLORS["primary"]))
+    fig.add_trace(go.Bar(x=etiquetas, y=[x["baseline"]["rmse"] for x in pasos], name="Baseline", marker_color=COLORS["warning"]))
+    fig.update_layout(barmode="group", height=280, margin=dict(l=10, r=10, t=40, b=10), paper_bgcolor="white",
+                      plot_bgcolor="white", font={"family": "Inter"}, yaxis=dict(title="RMSE (uds/producto)", gridcolor="#E2E8F0"),
+                      title={"text": "Error segun lo lejos que se predice", "font": {"size": 14}}, legend=dict(orientation="h", y=-0.2))
+    return fig
+
 def grafico_seleccion_variables(seleccion):
     """Cuanto empeora el error de validacion al quitar cada grupo de variables."""
     grupos = (seleccion or {}).get("grupos", [])

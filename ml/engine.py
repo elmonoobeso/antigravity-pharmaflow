@@ -441,7 +441,44 @@ def _backtest_walk_forward(df, cols, params, n_folds=MESES_TEST_HOLDOUT):
     resumen = {"folds": detalle, "ml": global_ml, "baseline": global_base, "mejora_pct": mejora}
     return resumen, rmse_por_cn, res
 
-def entrenar_modelo_ml(df_features):
+def _backtest_horizonte(modelo, contexto, p_corte, p_ultimo):
+    """Mide la prediccion tal como la usa el pedido.
+
+    Desde el ultimo mes de train se predicen los meses del holdout encadenados (el
+    mes 2 usa la prediccion del mes 1), sin ver ninguna venta real posterior al
+    corte. El modelo es el del holdout: no ha visto esos meses ni para elegir
+    variables ni hiperparametros. Devuelve el error por mes de horizonte y el del
+    total del periodo por producto, que es lo que decide las unidades a pedir.
+    """
+    df_v = contexto["df_ventas"]
+    fechas = pd.to_datetime(df_v[COL_FECHA], errors="coerce", dayfirst=True)
+    df_hist = df_v[(fechas.dt.year * 12 + fechas.dt.month) < p_corte]
+    p_origen = p_corte - 1
+    n_meses = int(p_ultimo - p_corte + 1)
+    hoy = date((p_origen - 1) // 12, (p_origen - 1) % 12 + 1, 15)
+    futuro, _ = construir_features_futuras(modelo, df_hist, contexto["df_inventario"], contexto["perfil"],
+                                           contexto["calendario"], contexto.get("df_ofertas"), n_meses, hoy=hoy)
+    if futuro.empty:
+        return {}
+    real = _agregar_mensual(df_v)
+    real["_p"] = real["Anio"] * 12 + real["Mes"]
+    futuro["_p"] = futuro["Anio"] * 12 + futuro["Mes"]
+    m = futuro.merge(real[[COL_CN, "_p", COL_VENTAS]].rename(columns={COL_VENTAS: "_real"}),
+                     on=[COL_CN, "_p"], how="left")
+    m["_real"] = m["_real"].fillna(0.0)
+    pasos = []
+    for h, (p, g) in enumerate(m.groupby("_p"), start=1):
+        pasos.append({"h": h, "periodo": _fmt_periodo(p),
+                      "ml": _metricas_error(g["_real"], g["Prediccion_Base"]),
+                      "baseline": _metricas_error(g["_real"], g["Base_Mirroring"])})
+    tot = m.groupby(COL_CN)[["_real", "Prediccion_Base", "Base_Mirroring"]].sum()
+    ml_t = _metricas_error(tot["_real"], tot["Prediccion_Base"])
+    base_t = _metricas_error(tot["_real"], tot["Base_Mirroring"])
+    mejora = round((base_t["rmse"] - ml_t["rmse"]) / base_t["rmse"] * 100, 1) if base_t["rmse"] > 0 else None
+    return {"origen": _fmt_periodo(p_origen), "n_meses": n_meses, "pasos": pasos,
+            "total": {"ml": ml_t, "baseline": base_t, "mejora_pct": mejora}}
+
+def entrenar_modelo_ml(df_features, contexto=None):
     """Pipeline completo: split temporal -> tuning -> holdout -> backtest.
 
     Devuelve (modelo, metricas, rmse_por_cn). El rmse_por_cn sale del backtest
@@ -480,6 +517,8 @@ def entrenar_modelo_ml(df_features):
     met_holdout = _metricas_error(df_test[COL_VENTAS], pred_holdout)
     met_holdout["r2"] = round(float(r2_score(df_test[COL_VENTAS], pred_holdout)), 4)
     met_baseline_holdout = _metricas_error(df_test[COL_VENTAS], _prediccion_baseline(df_test))
+    # 3b. Holdout a varios meses vista, encadenado como en el pedido (necesita el historico).
+    backtest_horizonte = _backtest_horizonte(modelo_holdout, contexto, p_corte, periodos[-1]) if contexto else {}
 
     # 4. Backtest walk-forward sobre todo el historico.
     backtest, rmse_por_cn, residuos = _backtest_walk_forward(df, cols, mejores_params)
@@ -516,6 +555,7 @@ def entrenar_modelo_ml(df_features):
         "ensayos_tuning": ensayos,
         "holdout": met_holdout,
         "holdout_baseline": met_baseline_holdout,
+        "backtest_horizonte": backtest_horizonte,
         "backtest": backtest,
         "peores_productos": peores,
         "residuos_hist": hist_residuos,
@@ -579,6 +619,7 @@ def construir_artefacto_pipeline(df_features, metricas):
         "holdout": metricas.get("holdout", {}),
         "holdout_baseline": metricas.get("holdout_baseline", {}),
         "backtest": metricas.get("backtest", {}),
+        "backtest_horizonte": metricas.get("backtest_horizonte", {}),
         "peores_productos": metricas.get("peores_productos", []),
         "residuos_hist": metricas.get("residuos_hist", {}),
     }

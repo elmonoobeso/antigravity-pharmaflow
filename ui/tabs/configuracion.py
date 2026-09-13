@@ -283,7 +283,9 @@ def modulo_configuracion():
                     cal_f = cargar_calendario_farmacia()
                     ofertas_n = st.session_state.get("ofertas_normalizadas")
                     df_feat = build_features(df_hist_imp, st.session_state["inventario"], perfil_f, cal_f, ofertas_n)
-                    model, metricas, rmse_cn = entrenar_modelo_ml(df_feat)
+                    model, metricas, rmse_cn = entrenar_modelo_ml(df_feat, contexto={
+                        "df_ventas": df_hist_imp, "df_inventario": st.session_state["inventario"],
+                        "perfil": perfil_f, "calendario": cal_f, "df_ofertas": ofertas_n})
                     if model is not None:
                         guardar_modelo_farmacia(model, metricas, rmse_cn, df_feat)
                         invalidar_cache_modelo()

@@ -2,7 +2,7 @@ from ml.engine import ML_AVAILABLE
 import streamlit as st
 import pandas as pd
 from data.io import cargar_json_farmacia
-from ui.charts import grafico_backtest_folds, grafico_backtest_totales, grafico_importancia_features, grafico_residuos, grafico_seleccion_variables, grafico_timeline_split, grafico_tuning, grafico_walk_forward
+from ui.charts import grafico_backtest_folds, grafico_backtest_totales, grafico_horizonte, grafico_importancia_features, grafico_residuos, grafico_seleccion_variables, grafico_timeline_split, grafico_tuning, grafico_walk_forward
 from ui.components import render_kpi
 
 
@@ -137,6 +137,23 @@ def modulo_laboratorio_ml():
         with cg2:
             fig_tot = grafico_backtest_totales(bt)
             if fig_tot: st.plotly_chart(fig_tot, width="stretch", key="lab_totales")
+
+    bh = pipeline.get("backtest_horizonte", {})
+    if bh.get("pasos"):
+        st.markdown("**Prediccion a varios meses, como en el pedido**")
+        st.caption(f"Desde {bh['origen']} se predicen los {bh['n_meses']} meses siguientes encadenados, sin ver "
+                   "ninguna venta real posterior: el mes 2 usa la prediccion del mes 1. Es lo que ocurre al pedir "
+                   "con varios meses de cobertura, y es mas exigente que predecir solo el mes siguiente.")
+        ch1, ch2 = st.columns([3, 2])
+        with ch1:
+            fig_h = grafico_horizonte(bh)
+            if fig_h: st.plotly_chart(fig_h, width="stretch", key="lab_horizonte")
+        with ch2:
+            tot = bh.get("total", {})
+            mej_h = tot.get("mejora_pct")
+            render_kpi(f"Error del total de {bh['n_meses']} meses (ML)", str(tot.get("ml", {}).get("rmse", "?")))
+            render_kpi("Baseline", str(tot.get("baseline", {}).get("rmse", "?")))
+            render_kpi("Mejora a varios meses", f"{mej_h}%" if mej_h is not None else "?", delta_positive=(mej_h or 0) > 0)
 
     # --- 6. Holdout vs baseline ---
     st.divider()
