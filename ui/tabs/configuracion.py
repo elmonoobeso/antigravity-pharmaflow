@@ -3,7 +3,7 @@ import pandas as pd
 from config.settings import COL_CN, COL_FECHA, COL_LAB, COL_MOLECULA, COL_NOMBRE, COL_PVL, COL_STOCK, COL_VENTAS
 from core.business import cargar_calendario_farmacia, cargar_perfil_farmacia, cargar_productos_protegidos, cargar_reglas_surtido, guardar_calendario_farmacia, guardar_perfil_farmacia, guardar_productos_protegidos, guardar_reglas_surtido, imputar_stockouts, normalizar_ofertas_dinamico, obtener_ventas_media, registrar_snapshot_auditoria
 from data.io import guardar_dataframe_farmacia, ruta_farmacia_activa
-from ml.engine import ML_AVAILABLE, build_features, cold_start_proxy, entrenar_modelo_ml, guardar_modelo_farmacia, invalidar_cache_modelo, necesita_reentrenamiento, obtener_modelo_cacheado
+from ml.engine import ML_AVAILABLE, build_features, entrenar_modelo_ml, guardar_modelo_farmacia, invalidar_cache_modelo, necesita_reentrenamiento, obtener_modelo_cacheado
 from ui.charts import grafico_importancia_features
 from ui.components import render_kpi
 from utils.helpers import validar_y_renombrar_columnas
@@ -283,7 +283,6 @@ def modulo_configuracion():
                     cal_f = cargar_calendario_farmacia()
                     ofertas_n = st.session_state.get("ofertas_normalizadas")
                     df_feat = build_features(df_hist_imp, st.session_state["inventario"], perfil_f, cal_f, ofertas_n)
-                    df_feat = cold_start_proxy(df_feat, st.session_state["inventario"])
                     model, metricas, rmse_cn = entrenar_modelo_ml(df_feat)
                     if model is not None:
                         guardar_modelo_farmacia(model, metricas, rmse_cn, df_feat)

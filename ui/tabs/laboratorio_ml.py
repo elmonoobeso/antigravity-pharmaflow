@@ -158,9 +158,9 @@ def modulo_laboratorio_ml():
     rmse_ref = ml_g.get("rmse", 0) or 0
     st.markdown(
         "El error del backtest **no se queda en una metrica**: es lo que fija el colchon de seguridad.\n\n"
-        "- **Stock de seguridad** = z x RMSE del producto, con z = 1,645 al 95% de nivel de "
+        "- **Stock de seguridad** = z x RMSE del producto x raiz(meses de cobertura), con z = 1,645 al 95% de nivel de "
         "servicio y z = 2,326 al 99%.\n"
-        f"- Con el RMSE global actual ({rmse_ref} uds), el colchon seria de "
+        f"- Con el RMSE global actual ({rmse_ref} uds) y 1 mes de cobertura, el colchon seria de "
         f"**{round(1.645 * rmse_ref)} uds al 95%** o **{round(2.326 * rmse_ref)} uds al 99%**.\n"
         "- El RMSE se calcula **por producto**: los predecibles reciben menos colchon y los "
         "erraticos mas, en vez de aplicar un margen plano a todo el inventario.\n"

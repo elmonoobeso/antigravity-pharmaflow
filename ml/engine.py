@@ -4,7 +4,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="xgboost")
 
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import date, datetime
 from calendar import monthrange
 from data.io import cargar_json_farmacia, guardar_json_farmacia, ruta_farmacia_activa
 from utils.helpers import normalizar_cn
@@ -12,7 +12,7 @@ from config.settings import (
     COL_CN, COL_VENTAS, COL_FECHA, COL_MOLECULA, Z_SCORES
 )
 from core.business import (
-    calcular_horas_mes, calcular_dias_abiertos_mes, obtener_cns_con_promo_historica,
+    calcular_horas_mes, calcular_dias_abiertos_mes,
     generar_pedido_cobertura, crecimiento_12m
 )
 import streamlit as st
@@ -111,96 +111,93 @@ def _codificar_atc_sin_fuga(mensual):
     resultado = enc["_enc"].fillna(enc["_periodo"].map(glob_exp)).fillna(0.0)
     return resultado.round(2).values
 
-def cold_start_proxy(df_features, df_inventario, min_meses=6):
-    conteo = df_features.groupby(COL_CN).size().reset_index(name="n_meses")
-    cns_nuevos = set(conteo[conteo["n_meses"] < min_meses][COL_CN])
-    if not cns_nuevos or COL_MOLECULA not in df_inventario.columns:
-        return df_features
-    mol_map = df_inventario.set_index(COL_CN).get(COL_MOLECULA, pd.Series(dtype=str)).to_dict()
-    df_features["_mol_proxy"] = df_features[COL_CN].map(mol_map)
-    df_maduros = df_features[~df_features[COL_CN].isin(cns_nuevos)]
-    if df_maduros.empty:
-        df_features = df_features.drop(columns=["_mol_proxy"])
-        return df_features
-    media_mol = df_maduros.groupby("_mol_proxy")[COL_VENTAS].mean().to_dict()
-    mask_nuevo = df_features[COL_CN].isin(cns_nuevos)
-    df_features.loc[mask_nuevo, COL_VENTAS] = df_features.loc[mask_nuevo, "_mol_proxy"].map(media_mol).fillna(
-        df_features.loc[mask_nuevo, COL_VENTAS])
-    df_features = df_features.drop(columns=["_mol_proxy"])
-    return df_features
+MIN_MESES_COLD_START = 6
+MESES_DESFASE_AVISO = 2
 
-def build_features(df_ventas, df_inventario, perfil, calendario, df_ofertas_norm=None):
-    df = df_ventas.copy()
-    if COL_FECHA not in df.columns:
+def _agregar_mensual(df_ventas):
+    """Historico de ventas -> una fila por producto y mes (Anio, Mes, Ventas)."""
+    if df_ventas is None or COL_FECHA not in df_ventas.columns:
         return pd.DataFrame()
-
+    df = df_ventas.copy()
     df[COL_FECHA] = pd.to_datetime(df[COL_FECHA], errors="coerce", dayfirst=True)
     df = df.dropna(subset=[COL_FECHA])
-    df["Anio"] = df[COL_FECHA].dt.year
-    df["Mes"] = df[COL_FECHA].dt.month
+    df["Anio"] = df[COL_FECHA].dt.year.astype(int)
+    df["Mes"] = df[COL_FECHA].dt.month.astype(int)
+    return df.groupby([COL_CN, "Anio", "Mes"])[COL_VENTAS].sum().reset_index()
 
-    mensual = df.groupby([COL_CN, "Anio", "Mes"])[COL_VENTAS].sum().reset_index()
+def _promos_por_periodo():
+    """(CN, periodo) con promocion registrada en ese mes. Antes Was_Promo marcaba
+    todas las filas de un producto con cualquier promo registrada, aunque fuera
+    posterior al mes (informacion del futuro)."""
+    res = set()
+    for r in cargar_json_farmacia("historico_promociones.json", default=[]):
+        fecha = pd.to_datetime(r.get("fecha"), errors="coerce")
+        cn = normalizar_cn(r.get("codigo_nacional"))
+        if cn and pd.notna(fecha):
+            res.add((cn, fecha.year * 12 + fecha.month))
+    return res
 
-    mirror = mensual.copy().rename(columns={COL_VENTAS: "Base_Mirroring"})
-    mirror["Anio"] = mirror["Anio"] + 1
-    mensual = mensual.merge(mirror[[COL_CN, "Anio", "Mes", "Base_Mirroring"]],
-                            on=[COL_CN, "Anio", "Mes"], how="left")
-    mensual["Base_Mirroring"] = mensual["Base_Mirroring"].fillna(0)
+def _features_desde_mensual(mensual, df_inventario, perfil, calendario, df_ofertas_norm=None):
+    mensual = mensual.sort_values([COL_CN, "Anio", "Mes"]).reset_index(drop=True)
+    mensual["_periodo"] = mensual["Anio"] * 12 + mensual["Mes"]
+    ventas_p = mensual[[COL_CN, "_periodo", COL_VENTAS]]
+
+    # Mismo mes del ano anterior y mes anterior, por calendario (0 si no hubo ventas).
+    previo = ventas_p.assign(_periodo=ventas_p["_periodo"] + 12).rename(columns={COL_VENTAS: "Base_Mirroring"})
+    lag = ventas_p.assign(_periodo=ventas_p["_periodo"] + 1).rename(columns={COL_VENTAS: "Lag_30"})
+    mensual = mensual.merge(previo, on=[COL_CN, "_periodo"], how="left").merge(lag, on=[COL_CN, "_periodo"], how="left")
+    mensual[["Base_Mirroring", "Lag_30"]] = mensual[["Base_Mirroring", "Lag_30"]].fillna(0)
 
     # Crecimiento 12m vs 12m previos calculado en cada mes solo con meses anteriores:
     # la version previa usaba los dos ultimos anos naturales para todas las filas (fuga).
-    mensual["_periodo"] = mensual["Anio"] * 12 + mensual["Mes"]
-    crec = crecimiento_12m(mensual).rename(columns={"Crecimiento_12m": "Growth_Factor"})
-    mensual = mensual.merge(crec, on=[COL_CN, "_periodo"], how="left").drop(columns="_periodo")
+    crec = crecimiento_12m(ventas_p).rename(columns={"Crecimiento_12m": "Growth_Factor"})
+    mensual = mensual.merge(crec, on=[COL_CN, "_periodo"], how="left")
     mensual["Growth_Factor"] = mensual["Growth_Factor"].fillna(0.0)
 
-    mensual["Lag_30"] = mensual.groupby(COL_CN)[COL_VENTAS].shift(1).fillna(0)
-    mensual["Pct_Zona_Cobro"] = mensual.apply(
-        lambda r: _pct_zona_cobro(r["Anio"], r["Mes"]), axis=1)
+    # Variables de calendario y clima: una vez por mes, no por fila.
+    temp_data = st.session_state.get("temperatura_historica")
+    zona = perfil.get("zona_climatica", "mediterraneo")
+    cal_rows = []
+    for anio, mes in mensual[["Anio", "Mes"]].drop_duplicates().itertuples(index=False):
+        anio, mes = int(anio), int(mes)
+        cal_rows.append({
+            "Anio": anio, "Mes": mes,
+            "Pct_Zona_Cobro": _pct_zona_cobro(anio, mes),
+            "Horas_Abierto": calcular_horas_mes(anio, mes, calendario),
+            "Dias_Abiertos": calcular_dias_abiertos_mes(anio, mes, calendario),
+            "Temp_Media": _obtener_temperatura(anio, mes, temp_data, zona),
+        })
+    mensual = mensual.merge(pd.DataFrame(cal_rows), on=["Anio", "Mes"], how="left")
     mensual["Es_Paga_Extra"] = mensual["Mes"].isin([6, 12]).astype(int)
-
-    mensual["Horas_Abierto"] = mensual.apply(
-        lambda r: calcular_horas_mes(int(r["Anio"]), int(r["Mes"]), calendario), axis=1)
-    mensual["Dias_Abiertos"] = mensual.apply(
-        lambda r: calcular_dias_abiertos_mes(int(r["Anio"]), int(r["Mes"]), calendario), axis=1)
 
     mensual["Epi_Gripe"] = perfil.get("epi_gripe", 0)
     mensual["Epi_Alergias"] = perfil.get("epi_alergias", 0)
     mensual["Epi_Covid"] = perfil.get("epi_covid", 0)
-
     for key in ["centro_salud", "residencia", "colegio", "zona_turistica", "zona_rural"]:
         mensual[f"Perfil_{key}"] = int(perfil.get(key, False))
 
     mensual["Mes_Num"] = mensual["Mes"]
 
-    cns_promo = obtener_cns_con_promo_historica()
-    mensual["Was_Promo"] = mensual[COL_CN].isin(cns_promo).astype(int)
+    promos = _promos_por_periodo()
+    mensual["Was_Promo"] = [int((cn, p) in promos) for cn, p in zip(mensual[COL_CN], mensual["_periodo"], strict=True)]
 
     cns_oferta_actual = set()
     if df_ofertas_norm is not None and not df_ofertas_norm.empty:
         cns_oferta_actual = set(df_ofertas_norm["Oferta_Nombre"].str.lower())
     if COL_MOLECULA in df_inventario.columns:
-        mol_map = df_inventario.set_index(COL_CN).get(COL_MOLECULA, pd.Series(dtype=str)).to_dict()
-        mensual["_mol"] = mensual[COL_CN].map(mol_map).fillna("").str.lower()
-        mensual["Is_Future_Promo"] = mensual["_mol"].isin(cns_oferta_actual).astype(int)
-        mensual = mensual.drop(columns=["_mol"])
+        mol_map = df_inventario.set_index(COL_CN)[COL_MOLECULA].to_dict()
+        mensual["Is_Future_Promo"] = mensual[COL_CN].map(mol_map).fillna("").str.lower().isin(cns_oferta_actual).astype(int)
     else:
         mensual["Is_Future_Promo"] = 0
 
     atc_map = _obtener_mapa_atc(df_inventario)
     mensual["_grupo_atc"] = mensual[COL_CN].map(atc_map).fillna("OTRO")
-    mensual = mensual.sort_values([COL_CN, "Anio", "Mes"]).reset_index(drop=True)
     mensual["ATC_Encoded"] = _codificar_atc_sin_fuga(mensual)
     mensual = mensual.drop(columns=["_grupo_atc"])
 
-    temp_data = st.session_state.get("temperatura_historica")
-    zona = perfil.get("zona_climatica", "mediterraneo")
-    mensual["Temp_Media"] = mensual.apply(
-        lambda r: _obtener_temperatura(int(r["Anio"]), int(r["Mes"]), temp_data, zona), axis=1)
     if temp_data is not None and not temp_data.empty:
-        temp_clima = mensual.groupby("Mes")["Temp_Media"].mean().to_dict()
-        mensual["Temp_Desviacion"] = mensual.apply(
-            lambda r: round(r["Temp_Media"] - temp_clima.get(r["Mes"], r["Temp_Media"]), 1), axis=1)
+        temp_clima = mensual.groupby("Mes")["Temp_Media"].mean()
+        mensual["Temp_Desviacion"] = (mensual["Temp_Media"] - mensual["Mes"].map(temp_clima)).round(1)
     else:
         mensual["Temp_Desviacion"] = 0.0
 
@@ -208,7 +205,65 @@ def build_features(df_ventas, df_inventario, perfil, calendario, df_ofertas_norm
     # snapshots historicos, asi que en entrenamiento valia 0 en casi todas las
     # filas y en prediccion tomaba un valor que el modelo nunca habia visto. El
     # stock real ya se descuenta despues, al calcular las unidades del pedido.
-    return mensual
+    return mensual.drop(columns=["_periodo"])
+
+def build_features(df_ventas, df_inventario, perfil, calendario, df_ofertas_norm=None):
+    mensual = _agregar_mensual(df_ventas)
+    if mensual.empty:
+        return pd.DataFrame()
+    return _features_desde_mensual(mensual, df_inventario, perfil, calendario, df_ofertas_norm)
+
+def _proxy_cold_start(mensual, df_inventario):
+    """Meses de historico por CN y venta mensual media de su molecula (productos
+    maduros, ultimos 12 meses). Solo ajusta predicciones: nunca las ventas reales
+    con las que se entrena y se mide el modelo."""
+    n_meses = mensual.groupby(COL_CN).size()
+    if COL_MOLECULA not in df_inventario.columns:
+        return n_meses, pd.Series(dtype=float)
+    periodo = mensual["Anio"] * 12 + mensual["Mes"]
+    recientes = mensual[periodo > periodo.max() - 12]
+    maduros = recientes[recientes[COL_CN].map(n_meses) >= MIN_MESES_COLD_START]
+    mol_map = df_inventario.set_index(COL_CN)[COL_MOLECULA].to_dict()
+    media_mol = maduros.assign(_mol=maduros[COL_CN].map(mol_map)).groupby("_mol")[COL_VENTAS].mean()
+    proxy = pd.Series({cn: media_mol.get(mol_map.get(cn), np.nan) for cn in n_meses.index}, dtype=float)
+    return n_meses, proxy
+
+def construir_features_futuras(model, df_ventas, df_inventario, perfil, calendario,
+                               df_ofertas_norm=None, meses_cobertura=2, hoy=None):
+    """Features de los meses que cubre el pedido: del mes siguiente a hoy en adelante.
+
+    Los meses entre el final del historico y el inicio de la cobertura se predicen
+    de forma recursiva: la prediccion de un mes alimenta el Lag, el Mirroring y el
+    crecimiento del siguiente. Productos con menos de MIN_MESES_COLD_START meses de
+    historico mezclan 50/50 la prediccion con la media de su molecula.
+    Devuelve (df_futuro con columna Prediccion_Base, meses sin datos reales).
+    """
+    mensual = _agregar_mensual(df_ventas)
+    if mensual.empty:
+        return pd.DataFrame(), 0
+    hoy = hoy or date.today()
+    mensual[COL_VENTAS] = mensual[COL_VENTAS].astype(float)
+    n_meses, proxy = _proxy_cold_start(mensual, df_inventario)
+    p_ultimo = int((mensual["Anio"] * 12 + mensual["Mes"]).max())
+    p_ini = max(hoy.year * 12 + hoy.month + 1, p_ultimo + 1)
+    p_fin = p_ini + int(meses_cobertura) - 1
+    cns = mensual[COL_CN].unique()
+    futuras = []
+    for p in range(p_ultimo + 1, p_fin + 1):
+        anio, mes = (p - 1) // 12, (p - 1) % 12 + 1
+        mensual = pd.concat([mensual, pd.DataFrame({COL_CN: cns, "Anio": anio, "Mes": mes, COL_VENTAS: 0.0})],
+                            ignore_index=True)
+        feats = _features_desde_mensual(mensual, df_inventario, perfil, calendario, df_ofertas_norm)
+        filas = feats[(feats["Anio"] == anio) & (feats["Mes"] == mes)].copy()
+        pred = model.predict(filas[[c for c in FEATURE_COLS if c in filas.columns]].fillna(0)).clip(min=0)
+        nuevo = (filas[COL_CN].map(n_meses).fillna(0) < MIN_MESES_COLD_START) & filas[COL_CN].map(proxy).notna()
+        filas["Prediccion_Base"] = np.where(nuevo, 0.5 * pred + 0.5 * filas[COL_CN].map(proxy).fillna(0), pred)
+        mask = (mensual["Anio"] == anio) & (mensual["Mes"] == mes)
+        pred_map = dict(zip(filas[COL_CN], filas["Prediccion_Base"], strict=True))
+        mensual.loc[mask, COL_VENTAS] = mensual.loc[mask, COL_CN].map(pred_map)
+        if p >= p_ini:
+            futuras.append(filas)
+    return pd.concat(futuras, ignore_index=True), p_ini - 1 - p_ultimo
 
 REJILLA_HIPERPARAMETROS = [
     {"max_depth": 3, "learning_rate": 0.05, "n_estimators": 300},
@@ -411,8 +466,10 @@ def entrenar_modelo_ml(df_features):
 
 def predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct=95):
     cols_disponibles = [c for c in FEATURE_COLS if c in df_features_futuro.columns]
-    X = df_features_futuro[cols_disponibles].fillna(0)
-    predicciones = model.predict(X).clip(min=0)
+    if "Prediccion_Base" in df_features_futuro.columns:
+        predicciones = df_features_futuro["Prediccion_Base"].to_numpy(dtype=float)
+    else:
+        predicciones = model.predict(df_features_futuro[cols_disponibles].fillna(0)).clip(min=0)
     z = Z_SCORES.get(nivel_servicio_pct, 1.645)
     rmse_global = np.mean(list(rmse_por_cn.values())) if rmse_por_cn else 1.0
     result = df_features_futuro[[COL_CN]].copy()
@@ -546,14 +603,14 @@ def generar_pedido_ml(df_inventario, model, df_features_futuro, rmse_por_cn,
                       meses_cobertura, nivel_servicio_pct, df_ofertas=None,
                       productos_protegidos=None):
     pred = predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct)
-    df_vm_ml = pred[[COL_CN, "Prediccion_Final", "RMSE_Producto"]].copy()
+    df_vm_ml = pred[[COL_CN, "Prediccion_Media", "RMSE_Producto"]].copy()
     df_vm_ml = df_vm_ml.rename(columns={
-        "Prediccion_Final": "Venta_Media_Mensual",
+        "Prediccion_Media": "Venta_Media_Mensual",
         "RMSE_Producto": "Venta_Std_Mensual",
     })
     return generar_pedido_cobertura(
         df_inventario, df_vm_ml, meses_cobertura, df_ofertas,
-        nivel_servicio=0.0,
+        nivel_servicio=Z_SCORES.get(nivel_servicio_pct, 1.645),
         productos_protegidos=productos_protegidos)
 
 def generar_pedido_ensemble(df_inventario, model, df_features_futuro, rmse_por_cn,
@@ -562,12 +619,12 @@ def generar_pedido_ensemble(df_inventario, model, df_features_futuro, rmse_por_c
     pred = predecir_demanda_ensemble(
         model, df_features_futuro, rmse_por_cn,
         df_ventas_media_heuristico, nivel_servicio_pct)
-    df_vm = pred[[COL_CN, "Prediccion_Final", "RMSE_Producto"]].copy()
+    df_vm = pred[[COL_CN, "Prediccion_Media", "RMSE_Producto"]].copy()
     df_vm = df_vm.rename(columns={
-        "Prediccion_Final": "Venta_Media_Mensual",
+        "Prediccion_Media": "Venta_Media_Mensual",
         "RMSE_Producto": "Venta_Std_Mensual",
     })
     return generar_pedido_cobertura(
         df_inventario, df_vm, meses_cobertura, df_ofertas,
-        nivel_servicio=0.0,
+        nivel_servicio=Z_SCORES.get(nivel_servicio_pct, 1.645),
         productos_protegidos=productos_protegidos)

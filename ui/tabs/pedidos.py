@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 from config.settings import COLORS, COL_CN, COL_LAB, COL_NOMBRE, COL_STOCK
 from core.business import calcular_health_score, calcular_roturas, calcular_stock_zombie, cargar_calendario_farmacia, cargar_perfil_farmacia, cargar_productos_protegidos, cargar_reglas_surtido, generar_panel_surtido, generar_pedido_cobertura, generar_pedido_presupuesto, imputar_stockouts, obtener_ventas_media, registrar_promociones_pedido, registrar_snapshot_kpi, validar_surtido_pedido
 from core.network import MARGEN_SEGURIDAD_DIAS, registrar_pedido_confirmado
-from ml.engine import ML_AVAILABLE, build_features, cold_start_proxy, generar_pedido_ensemble, generar_pedido_ml, obtener_modelo_cacheado
+from ml.engine import MESES_DESFASE_AVISO, ML_AVAILABLE, construir_features_futuras, generar_pedido_ensemble, generar_pedido_ml, obtener_modelo_cacheado
 from ui.charts import exportar_pedido_excel
 from ui.components import render_kpi
 from utils.helpers import format_eur, safe_div
@@ -69,13 +69,12 @@ def modulo_generador_pedidos():
                 perfil_f = cargar_perfil_farmacia()
                 cal_f = cargar_calendario_farmacia()
                 df_hist_imp = imputar_stockouts(st.session_state["historico"], df_inv)
-                df_feat = build_features(df_hist_imp, df_inv, perfil_f, cal_f, df_ofertas)
-                df_feat = cold_start_proxy(df_feat, df_inv)
-                ultimo_anio = df_feat["Anio"].max() if "Anio" in df_feat.columns else 2025
-                ultimo_mes = df_feat.loc[df_feat["Anio"] == ultimo_anio, "Mes"].max() if "Mes" in df_feat.columns else 12
-                df_futuro = df_feat[(df_feat["Anio"] == ultimo_anio) & (df_feat["Mes"] == ultimo_mes)].copy()
-                if df_futuro.empty:
-                    df_futuro = df_feat.groupby(COL_CN).last().reset_index()
+                # Features de los meses que cubre el pedido (no del ultimo mes del historico).
+                df_futuro, meses_sin_datos = construir_features_futuras(
+                    model, df_hist_imp, df_inv, perfil_f, cal_f, df_ofertas, meses)
+                if meses_sin_datos > MESES_DESFASE_AVISO:
+                    st.warning(f"\u26a0\ufe0f El historico acaba {meses_sin_datos} meses antes del periodo del pedido. "
+                               "Esos meses se han estimado con el propio modelo: actualiza el historico para una prediccion fiable.")
                 if lab_sel != "-- Todos --":
                     cns_lab = set(df_f[COL_CN])
                     df_futuro = df_futuro[df_futuro[COL_CN].isin(cns_lab)]
