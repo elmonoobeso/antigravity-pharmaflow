@@ -6,6 +6,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from data.io import cargar_json_farmacia, guardar_json_farmacia
+from utils.helpers import normalizar_cn
 from config.settings import (
     HEALTH_SCORE_MESES_DEFAULT, BASE_DIR, COL_CN, COL_STOCK, COL_NOMBRE, COL_PVL,
     COL_VENTAS, COL_FECHA, COL_MOLECULA, COL_LAB
@@ -62,10 +63,18 @@ def cargar_reglas_surtido():
     return cargar_json_farmacia("reglas_surtido.json", default=[])
 def guardar_reglas_surtido(reglas):
     guardar_json_farmacia("reglas_surtido.json", reglas)
+def _normalizar_protegidos(protegidos):
+    res = []
+    for pp in protegidos or []:
+        pp = dict(pp)
+        pp["codigo_nacional"] = normalizar_cn(pp.get("codigo_nacional"))
+        if pp["codigo_nacional"]:
+            res.append(pp)
+    return res
 def cargar_productos_protegidos():
-    return cargar_json_farmacia("productos_protegidos.json", default=[])
+    return _normalizar_protegidos(cargar_json_farmacia("productos_protegidos.json", default=[]))
 def guardar_productos_protegidos(protegidos):
-    guardar_json_farmacia("productos_protegidos.json", protegidos)
+    guardar_json_farmacia("productos_protegidos.json", _normalizar_protegidos(protegidos))
 
 def registrar_snapshot_auditoria(df_inventario, df_ventas_media):
     df = df_inventario.merge(df_ventas_media, on=COL_CN, how="left")
@@ -206,7 +215,7 @@ def registrar_promociones_pedido(df_pedido):
     for _, row in df_promo.iterrows():
         registros.append({
             "fecha": fecha,
-            "codigo_nacional": row.get(COL_CN, ""),
+            "codigo_nacional": normalizar_cn(row.get(COL_CN, "")),
             "molecula": row.get(COL_MOLECULA, ""),
             "laboratorio": row.get(COL_LAB, ""),
             "descuento": round(float(row.get("Descuento_Aplicado", 0)), 4),
@@ -216,7 +225,7 @@ def registrar_promociones_pedido(df_pedido):
 
 def obtener_cns_con_promo_historica():
     registros = cargar_json_farmacia("historico_promociones.json", default=[])
-    return {r["codigo_nacional"] for r in registros if r.get("codigo_nacional")}
+    return {normalizar_cn(r["codigo_nacional"]) for r in registros if r.get("codigo_nacional")}
 
 def normalizar_ofertas_dinamico(df_raw, mapping_nombre, mappings_tiers):
     df = df_raw.copy()
@@ -603,6 +612,8 @@ def calcular_conciliacion_fisico_logico(df_teorico, df_fisico):
     c_cn, c_qt = col_cn[0], col_cant[0]
     agg_fisico = df_fisico.groupby(c_cn)[c_qt].sum().reset_index()
     agg_fisico.columns = [COL_CN, "Stock_Fisico"]
+    agg_fisico[COL_CN] = normalizar_cn(agg_fisico[COL_CN])
+    agg_fisico = agg_fisico.groupby(COL_CN, as_index=False)["Stock_Fisico"].sum()
     
     df = df_teorico.copy()
     if COL_PVL not in df.columns: df[COL_PVL] = 0
@@ -814,7 +825,7 @@ def generar_pedido_cobertura(df_inventario, df_ventas_media, meses_cobertura,
 
     if productos_protegidos:
         for pp in productos_protegidos:
-            cn = pp.get("codigo_nacional", ""); stock_min = int(float(pp.get("stock_minimo", 1)))
+            cn = normalizar_cn(pp.get("codigo_nacional", "")); stock_min = int(float(pp.get("stock_minimo", 1)))
             mask = df[COL_CN] == cn
             if mask.any():
                 if df.loc[mask, COL_STOCK].iloc[0] < stock_min:
@@ -838,7 +849,7 @@ def generar_pedido_presupuesto(df_inventario, df_ventas_media, presupuesto, mese
     df_ideal = generar_pedido_cobertura(df_inventario, df_ventas_media, meses_cobertura, df_ofertas,
                                          productos_protegidos=productos_protegidos)
     if df_ideal.empty: return df_ideal
-    cn_prot = {pp["codigo_nacional"] for pp in (productos_protegidos or [])}
+    cn_prot = {normalizar_cn(pp.get("codigo_nacional")) for pp in (productos_protegidos or [])}
     df_p = df_ideal[df_ideal[COL_CN].isin(cn_prot)].copy()
     df_r = df_ideal[~df_ideal[COL_CN].isin(cn_prot)].copy()
     gasto_p = (df_p["Cantidad_A_Pedir"] * df_p["Precio_Unitario"] * (1 - df_p["Descuento_Aplicado"])).sum() if not df_p.empty else 0

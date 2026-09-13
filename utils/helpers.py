@@ -1,4 +1,25 @@
+import pandas as pd
 import streamlit as st
+
+
+def normalizar_cn(valor):
+    """Codigo Nacional como texto canonico: '654321.0', 654321 y '0654321' -> '654321'.
+
+    Cada fuente (Excel, CSV, parquet, JSON, editor) trae el CN con un tipo distinto;
+    sin normalizar, los merge fallan o no casan. Acepta un escalar o una Serie.
+    """
+    if isinstance(valor, pd.Series):
+        return valor.map(normalizar_cn)
+    if valor is None or (not isinstance(valor, str) and pd.isna(valor)):
+        return ""
+    if isinstance(valor, float) and valor.is_integer():
+        valor = int(valor)
+    txt = str(valor).strip()
+    if txt.endswith(".0") and txt[:-2].isdigit():
+        txt = txt[:-2]
+    if txt.isdigit():
+        txt = txt.lstrip("0") or "0"
+    return txt
 
 def inject_custom_css():
     st.markdown("""
@@ -77,4 +98,7 @@ def validar_y_renombrar_columnas(df, columnas_requeridas):
         informe[col_esperada] = encontrada
     if rename_map:
         df = df.rename(columns=rename_map)
+    from config.settings import COL_CN
+    if COL_CN in df.columns:
+        df[COL_CN] = normalizar_cn(df[COL_CN])
     return df, informe

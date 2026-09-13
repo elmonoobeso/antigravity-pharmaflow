@@ -7,6 +7,7 @@ import numpy as np
 from datetime import datetime
 from calendar import monthrange
 from data.io import cargar_json_farmacia, guardar_json_farmacia, ruta_farmacia_activa
+from utils.helpers import normalizar_cn
 from config.settings import (
     COL_CN, COL_VENTAS, COL_FECHA, COL_MOLECULA, Z_SCORES
 )
@@ -59,16 +60,16 @@ def _obtener_mapa_atc(df_inventario):
         atc_col = [c for c in atc_tabla.columns if "atc" in c.lower() or "grupo" in c.lower()]
         if cn_col and atc_col:
             mapa = atc_tabla.set_index(cn_col[0])[atc_col[0]].to_dict()
-            return {str(k): str(v)[:5] for k, v in mapa.items() if pd.notna(v)}
+            return {normalizar_cn(k): str(v)[:5] for k, v in mapa.items() if pd.notna(v)}
     if COL_MOLECULA in df_inventario.columns:
         mol_map = df_inventario.set_index(COL_CN)[COL_MOLECULA].to_dict()
         grupo_map = {}
         for cn, mol in mol_map.items():
             mol_str = str(mol).strip().lower()
             if mol_str in ("parafarmacia", "", "nan"):
-                grupo_map[str(cn)] = "PARA"
+                grupo_map[normalizar_cn(cn)] = "PARA"
             else:
-                grupo_map[str(cn)] = mol_str[:20]
+                grupo_map[normalizar_cn(cn)] = mol_str[:20]
         return grupo_map
     return {}
 

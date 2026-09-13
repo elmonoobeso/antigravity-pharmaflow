@@ -2,7 +2,8 @@ import json
 import os
 import streamlit as st
 import pandas as pd
-from config.settings import BASE_DIR
+from config.settings import BASE_DIR, COL_CN
+from utils.helpers import normalizar_cn
 
 def obtener_farmacias_disponibles():
     if not BASE_DIR.exists():
@@ -96,11 +97,15 @@ def _autocargar_datos_farmacia():
     if "inventario" not in st.session_state:
         df = cargar_dataframe_farmacia("inventario.parquet")
         if df is not None and not df.empty:
+            if COL_CN in df.columns:
+                df[COL_CN] = normalizar_cn(df[COL_CN])
             st.session_state["inventario"] = df
             cargados.append(f"Inventario ({len(df)} productos)")
     if "historico" not in st.session_state:
         df = cargar_dataframe_farmacia("historico.parquet")
         if df is not None and not df.empty:
+            if COL_CN in df.columns:
+                df[COL_CN] = normalizar_cn(df[COL_CN])
             st.session_state["historico"] = df
             cargados.append(f"Historico ({len(df)} registros)")
     if "ofertas_normalizadas" not in st.session_state:
