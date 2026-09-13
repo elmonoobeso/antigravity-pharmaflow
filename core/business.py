@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -6,8 +7,8 @@ from dateutil.relativedelta import relativedelta
 from calendar import monthrange
 from data.io import cargar_json_farmacia, guardar_json_farmacia
 from config.settings import (
-    HEALTH_SCORE_MESES_DEFAULT, COL_CN, COL_STOCK, COL_NOMBRE, COL_PVL,
-    COL_VENTAS, COL_FECHA, COL_MOLECULA
+    HEALTH_SCORE_MESES_DEFAULT, BASE_DIR, COL_CN, COL_STOCK, COL_NOMBRE, COL_PVL,
+    COL_VENTAS, COL_FECHA, COL_MOLECULA, COL_LAB
 )
 from utils.helpers import safe_div
 
@@ -320,6 +321,16 @@ def calcular_ventas_mensuales(df_ventas, meses_cobertura=2):
     vm["Venta_Media_Mensual"] = (vm["Venta_Media_Mensual"] * (1 + vm["Factor_Tendencia"])).clip(lower=0)
     return vm
 
+def obtener_ventas_media(meses_cobertura=2):
+    df_hist = st.session_state.get("historico")
+    if df_hist is None:
+        return pd.DataFrame()
+    current_hash = hash((pd.util.hash_pandas_object(df_hist).sum(), meses_cobertura))
+    if "ventas_media_cache" not in st.session_state or st.session_state.get("historico_hash") != current_hash:
+        st.session_state["ventas_media_cache"] = calcular_ventas_mensuales(df_hist, meses_cobertura)
+        st.session_state["historico_hash"] = current_hash
+    return st.session_state["ventas_media_cache"]
+
 
 # ANALISIS, MATCHING, TIERS, PEDIDOS
 # ===========================================================================
@@ -448,6 +459,7 @@ def calcular_coste_oportunidad(df_inventario, df_ventas_media):
 # --- Benchmark HS vs red ---
 def calcular_benchmark_hs(mi_hs):
     """Compara el HS de la farmacia activa con la media de la red."""
+    from core.network import cargar_red_config  # import diferido: core.network importa de este modulo
     red = cargar_red_config()
     farmacias = red.get("farmacias_activas", [])
     farmacia_activa = st.session_state.get("farmacia_activa", "")
@@ -848,79 +860,3 @@ def generar_pedido_presupuesto(df_inventario, df_ventas_media, presupuesto, mese
     df_f["Coste_Con_Dto"] = df_f["Coste_Sin_Dto"] * (1 - df_f["Descuento_Aplicado"])
     df_f["Ahorro"] = df_f["Coste_Sin_Dto"] - df_f["Coste_Con_Dto"]
     return df_f
-
-def generar_pedido_ml(df_inventario, model, df_features_futuro, rmse_por_cn,
-                      meses_cobertura, nivel_servicio_pct, df_ofertas=None,
-                      productos_protegidos=None):
-    pred = predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct)
-    df_vm_ml = pred[[COL_CN, "Prediccion_Final", "RMSE_Producto"]].copy()
-    df_vm_ml = df_vm_ml.rename(columns={
-        "Prediccion_Final": "Venta_Media_Mensual",
-        "RMSE_Producto": "Venta_Std_Mensual",
-    })
-    return generar_pedido_cobertura(
-        df_inventario, df_vm_ml, meses_cobertura, df_ofertas,
-        nivel_servicio=0.0,
-        productos_protegidos=productos_protegidos)
-
-
-def predecir_demanda_ensemble(model, df_features_futuro, rmse_por_cn,
-                               df_ventas_media_heuristico, nivel_servicio_pct=95):
-    """Motor Ensemble: pondera ML + Heuristico por confianza por producto.
-    Confianza ML = 1 - (RMSE_producto / std_ventas_producto). Si RMSE < std, ML es mejor.
-    """
-    pred_ml = predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct)
-
-    if df_ventas_media_heuristico is None or df_ventas_media_heuristico.empty:
-        return pred_ml
-
-    # Merge con heuristico
-    heur = df_ventas_media_heuristico[[COL_CN, "Venta_Media_Mensual"]].copy()
-    heur = heur.rename(columns={"Venta_Media_Mensual": "Pred_Heuristico"})
-    result = pred_ml.merge(heur, on=COL_CN, how="left")
-    result["Pred_Heuristico"] = result["Pred_Heuristico"].fillna(result["Prediccion_Media"])
-
-    # Calcular peso ML por producto basado en confianza
-    # Si std del producto es conocida, usar Std. Sino, usar RMSE como proxy.
-    if "Venta_Std_Mensual" in df_ventas_media_heuristico.columns:
-        std_map = df_ventas_media_heuristico.set_index(COL_CN)["Venta_Std_Mensual"].to_dict()
-        result["_std"] = result[COL_CN].map(std_map).fillna(result["RMSE_Producto"])
-    else:
-        result["_std"] = result["RMSE_Producto"]
-
-    # Peso ML = clip(1 - RMSE/std, 0.2, 0.8) — siempre damos algo de peso a ambos
-    std_clipped = result["_std"].clip(lower=0.1)
-    result["_peso_ml"] = (1 - result["RMSE_Producto"] / std_clipped).clip(0.2, 0.8)
-
-    # Prediccion ensemble
-    result["Prediccion_Media"] = (
-        result["_peso_ml"] * result["Prediccion_Media"] +
-        (1 - result["_peso_ml"]) * result["Pred_Heuristico"]
-    )
-    result["Prediccion_Final"] = np.ceil(
-        result["_peso_ml"] * result["Prediccion_Final"] +
-        (1 - result["_peso_ml"]) * result["Pred_Heuristico"]
-    )
-
-    result = result.drop(columns=["_std", "_peso_ml", "Pred_Heuristico"], errors="ignore")
-    return result
-
-
-def generar_pedido_ensemble(df_inventario, model, df_features_futuro, rmse_por_cn,
-                            df_ventas_media_heuristico, meses_cobertura,
-                            nivel_servicio_pct, df_ofertas=None, productos_protegidos=None):
-    """Genera pedido usando motor Ensemble (ML + Heuristico ponderado)."""
-    pred = predecir_demanda_ensemble(
-        model, df_features_futuro, rmse_por_cn,
-        df_ventas_media_heuristico, nivel_servicio_pct)
-    df_vm = pred[[COL_CN, "Prediccion_Final", "RMSE_Producto"]].copy()
-    df_vm = df_vm.rename(columns={
-        "Prediccion_Final": "Venta_Media_Mensual",
-        "RMSE_Producto": "Venta_Std_Mensual",
-    })
-    return generar_pedido_cobertura(
-        df_inventario, df_vm, meses_cobertura, df_ofertas,
-        nivel_servicio=0.0,
-        productos_protegidos=productos_protegidos)
-
-

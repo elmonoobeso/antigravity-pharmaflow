@@ -7,7 +7,10 @@ from data.io import obtener_farmacias_disponibles, crear_farmacia, ruta_farmacia
 from utils.helpers import validar_y_renombrar_columnas, safe_div, format_eur
 from core.business import *
 from core.network import *
-from ml.engine import ML_AVAILABLE, entrenar_modelo_ml, cargar_modelo_farmacia, guardar_modelo_farmacia, build_features, cold_start_proxy, predecir_demanda_ensemble
+from ml.engine import (ML_AVAILABLE, entrenar_modelo_ml, guardar_modelo_farmacia,
+                       build_features, cold_start_proxy, obtener_modelo_cacheado,
+                       invalidar_cache_modelo, necesita_reentrenamiento,
+                       generar_pedido_ml, generar_pedido_ensemble)
 from ui.components import render_header, render_kpi
 from ui.charts import *
 from utils.pdf_generator import generar_informe_pdf
@@ -567,7 +570,7 @@ def modulo_business_intelligence():
         farmacia_nombre, hs, len(df_z), dz, len(df_uvi), duvi,
         nr, coste_op, ahorro_acum_total, rotacion_media, benchmark)
     
-    informe_filename = "informe_pharmaflow.pdf"
+    informe_filename = "informe_pharmasmart.pdf"
     
     # GUARDA FISICAMENTE COMO BACKUP 100% SEGURO
     with open(informe_filename, "wb") as f:
@@ -753,7 +756,7 @@ def modulo_generador_pedidos():
             st.download_button(
                 f"\U0001f4e5 Descargar Pedido {lab_txt} (.xlsx)",
                 data=exportar_pedido_excel(df_ped),
-                file_name=f"PharmaFlow_{lab_txt}_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
+                file_name=f"PharmaSmart_{lab_txt}_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 type="primary", use_container_width=True)
         with col_confirm:

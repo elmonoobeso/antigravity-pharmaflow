@@ -11,7 +11,8 @@ from config.settings import (
     COL_CN, COL_VENTAS, COL_FECHA, COL_MOLECULA, COL_STOCK, Z_SCORES
 )
 from core.business import (
-    calcular_horas_mes, calcular_dias_abiertos_mes, obtener_cns_con_promo_historica
+    calcular_horas_mes, calcular_dias_abiertos_mes, obtener_cns_con_promo_historica,
+    generar_pedido_cobertura
 )
 from utils.helpers import safe_div
 import streamlit as st
@@ -261,6 +262,25 @@ def cargar_modelo_farmacia():
     except Exception:
         return None, None, None
 
+def obtener_modelo_cacheado():
+    if "modelo_ml_cache" not in st.session_state:
+        model, met, rmse = cargar_modelo_farmacia()
+        st.session_state["modelo_ml_cache"] = (model, met, rmse)
+    return st.session_state["modelo_ml_cache"]
+
+def invalidar_cache_modelo():
+    st.session_state.pop("modelo_ml_cache", None)
+
+def necesita_reentrenamiento():
+    _, met, _ = obtener_modelo_cacheado()
+    if met is None:
+        return False
+    n_hist_modelo = met.get("n_registros_historico", 0)
+    df_hist = st.session_state.get("historico")
+    if df_hist is None:
+        return False
+    return len(df_hist) != n_hist_modelo
+
 def predecir_demanda_ensemble(model, df_features_futuro, rmse_por_cn,
                                df_ventas_media_heuristico, nivel_servicio_pct=95):
     pred_ml = predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct)
@@ -287,3 +307,33 @@ def predecir_demanda_ensemble(model, df_features_futuro, rmse_por_cn,
     )
     result = result.drop(columns=["_std", "_peso_ml", "Pred_Heuristico"], errors="ignore")
     return result
+
+def generar_pedido_ml(df_inventario, model, df_features_futuro, rmse_por_cn,
+                      meses_cobertura, nivel_servicio_pct, df_ofertas=None,
+                      productos_protegidos=None):
+    pred = predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct)
+    df_vm_ml = pred[[COL_CN, "Prediccion_Final", "RMSE_Producto"]].copy()
+    df_vm_ml = df_vm_ml.rename(columns={
+        "Prediccion_Final": "Venta_Media_Mensual",
+        "RMSE_Producto": "Venta_Std_Mensual",
+    })
+    return generar_pedido_cobertura(
+        df_inventario, df_vm_ml, meses_cobertura, df_ofertas,
+        nivel_servicio=0.0,
+        productos_protegidos=productos_protegidos)
+
+def generar_pedido_ensemble(df_inventario, model, df_features_futuro, rmse_por_cn,
+                            df_ventas_media_heuristico, meses_cobertura,
+                            nivel_servicio_pct, df_ofertas=None, productos_protegidos=None):
+    pred = predecir_demanda_ensemble(
+        model, df_features_futuro, rmse_por_cn,
+        df_ventas_media_heuristico, nivel_servicio_pct)
+    df_vm = pred[[COL_CN, "Prediccion_Final", "RMSE_Producto"]].copy()
+    df_vm = df_vm.rename(columns={
+        "Prediccion_Final": "Venta_Media_Mensual",
+        "RMSE_Producto": "Venta_Std_Mensual",
+    })
+    return generar_pedido_cobertura(
+        df_inventario, df_vm, meses_cobertura, df_ofertas,
+        nivel_servicio=0.0,
+        productos_protegidos=productos_protegidos)
