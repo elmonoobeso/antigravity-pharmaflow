@@ -11,7 +11,8 @@ from ui.tabs import (
     modulo_business_intelligence,
     modulo_generador_pedidos,
     modulo_auditoria,
-    modulo_torre_control
+    modulo_torre_control,
+    modulo_laboratorio_ml
 )
 
 def main():
@@ -54,19 +55,21 @@ def main():
             st.session_state.pop("farmacia_activa", None)
             st.rerun()
 
-    t1, t2, t3, t4, t5 = st.tabs([
+    t1, t2, t3, t4, t5, t6 = st.tabs([
         "\u2699\ufe0f Configuracion",
         "\U0001f4ca Business Intelligence",
         "\U0001f680 Pedidos Transfer",
         "\U0001f6e0\ufe0f Auditoria",
         "\U0001f3d7\ufe0f Torre de Control",
+        "\U0001f9ea Laboratorio ML",
     ])
-    
+
     with t1: modulo_configuracion()
     with t2: modulo_business_intelligence()
     with t3: modulo_generador_pedidos()
     with t4: modulo_auditoria()
     with t5: modulo_torre_control()
+    with t6: modulo_laboratorio_ml()
 
     st.markdown("---")
     st.markdown(

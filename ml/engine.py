@@ -310,6 +310,9 @@ def _backtest_walk_forward(df, cols, params, n_folds=MESES_TEST_HOLDOUT):
             "n_train": int(mask_tr.sum()),
             "ml": _metricas_error(y_real, y_pred),
             "baseline": _metricas_error(y_real, y_base),
+            "total_real": round(float(np.sum(y_real)), 1),
+            "total_ml": round(float(np.sum(y_pred)), 1),
+            "total_baseline": round(float(np.sum(y_base)), 1),
         })
         residuos.append(pd.DataFrame({COL_CN: df.loc[mask_te, COL_CN].values,
                                       "y_real": y_real, "y_pred": y_pred, "y_base": y_base}))
@@ -374,11 +377,19 @@ def entrenar_modelo_ml(df_features):
     imp = dict(sorted(zip(cols, (float(v) for v in modelo_final.feature_importances_)),
                       key=lambda x: x[1], reverse=True))
 
-    peores = []
+    peores, hist_residuos = [], {}
     if not residuos.empty:
         peores = (residuos.assign(_err=(residuos["y_pred"] - residuos["y_real"]).abs())
                           .groupby(COL_CN)["_err"].mean().nlargest(10).round(2)
                           .reset_index().to_dict("records"))
+        err = (residuos["y_pred"] - residuos["y_real"]).values
+        counts, bordes = np.histogram(err, bins=15)
+        hist_residuos = {
+            "counts": [int(c) for c in counts],
+            "bordes": [round(float(b), 2) for b in bordes],
+            "p50": round(float(np.percentile(err, 50)), 2),
+            "p90": round(float(np.percentile(np.abs(err), 90)), 2),
+        }
 
     metricas = {
         "rmse": backtest["ml"].get("rmse", met_holdout["rmse"]),
@@ -394,6 +405,7 @@ def entrenar_modelo_ml(df_features):
         "holdout_baseline": met_baseline_holdout,
         "backtest": backtest,
         "peores_productos": peores,
+        "residuos_hist": hist_residuos,
         "n_periodos": len(periodos),
         "periodo_corte": _fmt_periodo(p_corte),
     }
@@ -449,6 +461,7 @@ def construir_artefacto_pipeline(df_features, metricas):
         "holdout_baseline": metricas.get("holdout_baseline", {}),
         "backtest": metricas.get("backtest", {}),
         "peores_productos": metricas.get("peores_productos", []),
+        "residuos_hist": metricas.get("residuos_hist", {}),
     }
 
 def guardar_modelo_farmacia(model, metricas, rmse_por_cn, df_features=None):

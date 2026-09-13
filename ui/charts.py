@@ -346,3 +346,99 @@ def grafico_roi_laboratorios(df_roi, top_n=15):
 
 
 # Cache
+
+
+# ===========================================================================
+# LABORATORIO ML — visualizacion de cada fase del pipeline
+# ===========================================================================
+def grafico_timeline_split(pipeline):
+    """Linea de tiempo del historico: que meses entrenan y cuales solo miden."""
+    datos = pipeline.get("datos", {})
+    split = pipeline.get("split", {})
+    if not datos.get("desde") or not split.get("periodo_corte"):
+        return None
+    meses_holdout = split.get("meses_holdout", 3)
+    n_total = datos.get("n_periodos", 0)
+    n_train = max(0, n_total - meses_holdout)
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=[n_train], y=["Historico"], orientation="h", name="Entrenamiento",
+                         marker_color=COLORS["primary"], text=f"{n_train} meses", textposition="inside"))
+    fig.add_trace(go.Bar(x=[meses_holdout], y=["Historico"], orientation="h", name="Holdout (solo medir)",
+                         marker_color=COLORS["warning"], text=f"{meses_holdout} meses", textposition="inside"))
+    fig.update_layout(barmode="stack", height=150, margin=dict(l=10, r=10, t=30, b=10),
+                      paper_bgcolor="white", plot_bgcolor="white", font={"family": "Inter"},
+                      xaxis=dict(title=f"{datos.get('desde')} → {datos.get('hasta')}", gridcolor="#E2E8F0"),
+                      yaxis=dict(title=""), legend=dict(orientation="h", y=-0.4))
+    return fig
+
+def grafico_tuning(ensayos, elegidos):
+    """RMSE de validacion por combinacion probada, marcando la ganadora."""
+    if not ensayos:
+        return None
+    etiquetas, valores, colores = [], [], []
+    for e in ensayos:
+        p = e.get("params", {})
+        et = f"d{p.get('max_depth')}·lr{p.get('learning_rate')}·n{p.get('n_estimators')}"
+        etiquetas.append(et)
+        valores.append(e.get("rmse_validacion"))
+        colores.append(COLORS["success"] if p == elegidos else COLORS["muted"])
+    fig = go.Figure(go.Bar(x=etiquetas, y=valores, marker_color=colores,
+                           text=[f"{v:.2f}" for v in valores], textposition="outside"))
+    fig.update_layout(height=330, margin=dict(l=10, r=10, t=30, b=10),
+                      paper_bgcolor="white", plot_bgcolor="white", font={"family": "Inter"},
+                      xaxis=dict(title="Combinacion de hiperparametros"),
+                      yaxis=dict(title="RMSE validacion (menor es mejor)", gridcolor="#E2E8F0"))
+    return fig
+
+def grafico_backtest_folds(backtest):
+    """Error del ML frente al baseline en cada mes del backtest."""
+    folds = backtest.get("folds", [])
+    if not folds:
+        return None
+    periodos = [f["periodo"] for f in folds]
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=periodos, y=[f["ml"]["rmse"] for f in folds],
+                         name="ML", marker_color=COLORS["primary"]))
+    fig.add_trace(go.Bar(x=periodos, y=[f["baseline"]["rmse"] for f in folds],
+                         name="Baseline heuristico", marker_color=COLORS["muted"]))
+    fig.update_layout(barmode="group", height=340, margin=dict(l=10, r=10, t=30, b=10),
+                      paper_bgcolor="white", plot_bgcolor="white", font={"family": "Inter"},
+                      xaxis=dict(title="Mes predicho"),
+                      yaxis=dict(title="RMSE (menor es mejor)", gridcolor="#E2E8F0"),
+                      legend=dict(orientation="h", y=-0.25))
+    return fig
+
+def grafico_backtest_totales(backtest):
+    """Unidades reales frente a lo que predijo cada motor, mes a mes."""
+    folds = backtest.get("folds", [])
+    if not folds or "total_real" not in folds[0]:
+        return None
+    periodos = [f["periodo"] for f in folds]
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=periodos, y=[f["total_real"] for f in folds], name="Real",
+                             mode="lines+markers", line=dict(color=COLORS["text"], width=3)))
+    fig.add_trace(go.Scatter(x=periodos, y=[f["total_ml"] for f in folds], name="ML",
+                             mode="lines+markers", line=dict(color=COLORS["primary"], width=2, dash="dash")))
+    fig.add_trace(go.Scatter(x=periodos, y=[f["total_baseline"] for f in folds], name="Baseline",
+                             mode="lines+markers", line=dict(color=COLORS["muted"], width=2, dash="dot")))
+    fig.update_layout(height=340, margin=dict(l=10, r=10, t=30, b=10),
+                      paper_bgcolor="white", plot_bgcolor="white", font={"family": "Inter"},
+                      xaxis=dict(title="Mes predicho"),
+                      yaxis=dict(title="Unidades totales", gridcolor="#E2E8F0"),
+                      legend=dict(orientation="h", y=-0.25))
+    return fig
+
+def grafico_residuos(hist):
+    """Distribucion del error. Centrada en 0 = modelo sin sesgo sistematico."""
+    if not hist or not hist.get("counts"):
+        return None
+    bordes = hist["bordes"]
+    centros = [(bordes[i] + bordes[i + 1]) / 2 for i in range(len(bordes) - 1)]
+    fig = go.Figure(go.Bar(x=centros, y=hist["counts"], marker_color=COLORS["primary"]))
+    fig.add_vline(x=0, line_dash="dash", line_color=COLORS["danger"],
+                  annotation_text="prediccion perfecta")
+    fig.update_layout(height=330, margin=dict(l=10, r=10, t=40, b=10),
+                      paper_bgcolor="white", plot_bgcolor="white", font={"family": "Inter"},
+                      xaxis=dict(title="Error (predicho − real). Negativo = se queda corto"),
+                      yaxis=dict(title="Nº de predicciones", gridcolor="#E2E8F0"))
+    return fig
