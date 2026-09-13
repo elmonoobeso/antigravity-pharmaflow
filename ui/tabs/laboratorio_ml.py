@@ -67,7 +67,9 @@ def modulo_laboratorio_ml():
     sel = feats.get("seleccion", {})
     st.caption(f"{len(feats.get('usadas', []))} variables en el modelo final. La seleccion es automatica y por "
                "grupos: se reentrena quitando cada grupo y solo se queda si quitarlo empeora el error. Se decide "
-               "con meses de entrenamiento; el holdout no participa.")
+               "con meses de entrenamiento; el holdout no participa. El modelo aprende cuantas veces su media "
+               "de 12 meses vende cada producto en cada mes y lo reescala a unidades: la estacionalidad se "
+               "comparte entre productos grandes y pequenos y sigue la tendencia si el producto crece.")
     cs1, cs2 = st.columns(2)
     with cs1:
         fig_sel = grafico_seleccion_variables(sel)

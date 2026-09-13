@@ -7,6 +7,7 @@ Comprueba que el codigo esta bien construido sin depender de datos reales:
   4. Con las ventas barajadas no aprende nada (si aprendiera, habria una fuga).
   5. La prediccion futura cubre los meses pedidos, sin huecos ni valores invalidos.
   6. El backtest a varios meses predice encadenado sin ver ventas reales posteriores.
+  7. Estacionalidad: un pedido de mayo-julio de un producto de verano sale mayor que uno de febrero-abril.
 
 Uso:  py -3.14 tests/test_ml_engine.py      (no escribe nada en farmacias/)
 """
@@ -37,7 +38,7 @@ def _anio_mes(p):
     return (p - 1) // 12, (p - 1) % 12 + 1
 
 
-def generar_datos(tipo="patron", n_productos=20, meses=36, semilla=0):
+def generar_datos(tipo="patron", n_productos=20, meses=36, semilla=0, fase_fija=None):
     """Ventas mensuales Poisson alrededor de una media conocida `mu` por producto y mes."""
     rng = np.random.default_rng(semilla)
     hist, inv, mu = [], [], {}
@@ -46,7 +47,7 @@ def generar_datos(tipo="patron", n_productos=20, meses=36, semilla=0):
         base = rng.uniform(20, 120)
         crec = rng.uniform(-0.01, 0.03)          # crecimiento mensual
         amp = rng.uniform(0.2, 0.6)              # amplitud estacional
-        fase = int(rng.integers(0, 12))
+        fase = int(rng.integers(0, 12)) if fase_fija is None else fase_fija
         for t in range(meses):
             p = PERIODO_INICIO + t
             anio, mes = _anio_mes(p)
@@ -174,6 +175,25 @@ def test_backtest_horizonte_sin_ver_el_futuro():
                                            hoy=date(*_anio_mes(corte - 1), 15))
     assert np.allclose(fut1["Prediccion_Base"], fut2["Prediccion_Base"]), "la prediccion depende de ventas posteriores al corte"
     return "error por mes: " + ", ".join(f"+{p['h']} ML {p['ml']['rmse']} / base {p['baseline']['rmse']}" for p in bh["pasos"])
+
+
+def test_estacionalidad_pedido_verano_vs_invierno():
+    # Productos con pico en julio; historico hasta dic-2023, verdad conocida para 2024.
+    hist, inv, mu = generar_datos("patron", meses=48, semilla=3, fase_fija=3)
+    fechas = pd.to_datetime(hist["Fecha"], dayfirst=True)
+    hist = hist[(fechas.dt.year * 12 + fechas.dt.month) <= PERIODO_INICIO + 35]
+    feat = E.build_features(hist, inv, PERFIL, CALENDARIO)
+    modelo, _, _ = E.entrenar_modelo_ml(feat)
+    verano, _ = E.construir_features_futuras(modelo, hist, inv, PERFIL, CALENDARIO, None, 3, hoy=date(2024, 4, 10))
+    invierno, _ = E.construir_features_futuras(modelo, hist, inv, PERFIL, CALENDARIO, None, 3, hoy=date(2024, 1, 10))
+    real_v = sum(mu[(cn, 2024 * 12 + m)] for cn in inv[COL_CN] for m in (5, 6, 7))
+    real_i = sum(mu[(cn, 2024 * 12 + m)] for cn in inv[COL_CN] for m in (2, 3, 4))
+    pred_v, pred_i = verano["Prediccion_Base"].sum(), invierno["Prediccion_Base"].sum()
+    ratio_pred, ratio_real = pred_v / pred_i, real_v / real_i
+    assert ratio_pred > 1.3, f"el pedido de verano no sale mayor que el de invierno (x{ratio_pred:.2f})"
+    assert abs(ratio_pred / ratio_real - 1) < 0.35, f"estacionalidad mal medida: x{ratio_pred:.2f} frente a x{ratio_real:.2f} real"
+    return (f"may-jul {pred_v:.0f} uds vs feb-abr {pred_i:.0f} uds (x{ratio_pred:.2f}; real x{ratio_real:.2f}, "
+            f"error del total verano {abs(pred_v / real_v - 1) * 100:.0f}%)")
 
 
 if __name__ == "__main__":

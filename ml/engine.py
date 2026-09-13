@@ -37,13 +37,18 @@ TEMP_CLIMATICA = {
 # valor fijo en todo el historico de la farmacia y el modelo no puede aprender de ellos.
 GRUPO_BASE = "Historia de ventas"
 GRUPOS_FEATURES = {
-    GRUPO_BASE: ["Base_Mirroring", "Lag_30", "Growth_Factor"],
+    GRUPO_BASE: ["Base_Mirroring", "Lag_30", "Growth_Factor", "Media_12m", "Mirroring_Ajustado",
+                 "Mirroring_Rel", "Lag_Rel"],
     "Calendario": ["Mes_Num", "Pct_Zona_Cobro", "Es_Paga_Extra", "Horas_Abierto", "Dias_Abiertos"],
     "Clima": ["Temp_Media", "Temp_Desviacion"],
     "Grupo terapeutico": ["ATC_Encoded"],
     "Promociones": ["Was_Promo", "Is_Future_Promo"],
 }
 FEATURE_COLS = [c for cols in GRUPOS_FEATURES.values() for c in cols]
+
+# Version del motor guardada con el modelo: un modelo de otra version se trata como obsoleto.
+# v2: objetivo relativo (ventas / nivel de 12 meses) y variables de nivel.
+VERSION_MOTOR = 2
 
 # Meses reservados como holdout final. No se usan ni para entrenar ni para
 # elegir hiperparametros: solo para medir.
@@ -164,6 +169,25 @@ def _features_desde_mensual(mensual, df_inventario, perfil, calendario, df_ofert
     mensual = mensual.merge(crec, on=[COL_CN, "_periodo"], how="left")
     mensual["Growth_Factor"] = mensual["Growth_Factor"].fillna(0.0)
 
+    # Nivel: media mensual de los 12 meses anteriores (o de los que lleve el producto
+    # si es mas nuevo). Es la escala con la que el modelo pasa de "veces su media" a unidades.
+    pmin, pmax = int(ventas_p["_periodo"].min()), int(ventas_p["_periodo"].max())
+    ancho = (ventas_p.groupby(["_periodo", COL_CN])[COL_VENTAS].sum()
+             .unstack(COL_CN).reindex(range(pmin, pmax + 1)).fillna(0))
+    suma12 = ancho.rolling(12, min_periods=1).sum().shift(1)
+    primer = ventas_p.groupby(COL_CN)["_periodo"].min().reindex(ancho.columns).to_numpy()
+    meses_previos = np.clip(ancho.index.to_numpy()[:, None] - primer[None, :], 0, 12).astype(float)
+    media12 = (suma12 / np.where(meses_previos > 0, meses_previos, np.nan)).fillna(0.0)
+    media12.index.name = "_periodo"
+    media12.columns.name = COL_CN
+    mensual = mensual.merge(media12.stack(future_stack=True).reset_index(name="Media_12m"),
+                            on=[COL_CN, "_periodo"], how="left")
+    mensual["Media_12m"] = mensual["Media_12m"].fillna(0.0).round(3)
+    nivel = _nivel(mensual)
+    mensual["Mirroring_Ajustado"] = mensual["Base_Mirroring"] * (1 + mensual["Growth_Factor"])
+    mensual["Mirroring_Rel"] = (mensual["Base_Mirroring"] / nivel).round(4)
+    mensual["Lag_Rel"] = (mensual["Lag_30"] / nivel).round(4)
+
     # Variables de calendario y clima: una vez por mes, no por fila.
     temp_data = st.session_state.get("temperatura_historica")
     zona = perfil.get("zona_climatica", "mediterraneo")
@@ -265,7 +289,7 @@ def construir_features_futuras(model, df_ventas, df_inventario, perfil, calendar
                             ignore_index=True)
         feats = _features_desde_mensual(mensual, df_inventario, perfil, calendario, df_ofertas_norm)
         filas = feats[(feats["Anio"] == anio) & (feats["Mes"] == mes)].copy()
-        pred = model.predict(filas[_columnas_modelo(model, filas)].fillna(0)).clip(min=0)
+        pred = _predecir(model, filas, _columnas_modelo(model, filas))
         nuevo = (filas[COL_CN].map(n_meses).fillna(0) < MIN_MESES_COLD_START) & filas[COL_CN].map(proxy).notna()
         filas["Prediccion_Base"] = np.where(nuevo, 0.5 * pred + 0.5 * filas[COL_CN].map(proxy).fillna(0), pred)
         mask = (mensual["Anio"] == anio) & (mensual["Mes"] == mes)
@@ -279,9 +303,11 @@ REJILLA_HIPERPARAMETROS = [
     {"max_depth": 3, "learning_rate": 0.05, "n_estimators": 300},
     {"max_depth": 3, "learning_rate": 0.10, "n_estimators": 200},
     {"max_depth": 4, "learning_rate": 0.05, "n_estimators": 300},
-    {"max_depth": 4, "learning_rate": 0.10, "n_estimators": 200},
     {"max_depth": 6, "learning_rate": 0.05, "n_estimators": 300},
-    {"max_depth": 6, "learning_rate": 0.10, "n_estimators": 200},
+    # Regularizadas: arboles simples, cada regla apoyada en varios ejemplos y penalizacion L2.
+    {"max_depth": 2, "learning_rate": 0.05, "n_estimators": 200, "min_child_weight": 5, "reg_lambda": 5.0},
+    {"max_depth": 3, "learning_rate": 0.03, "n_estimators": 250, "min_child_weight": 10, "reg_lambda": 10.0},
+    {"max_depth": 4, "learning_rate": 0.05, "n_estimators": 150, "min_child_weight": 20, "reg_lambda": 10.0},
 ]
 
 def _periodos(df):
@@ -293,6 +319,25 @@ def _fmt_periodo(p):
     p % 12 vale 0 y p // 12 ya ha sumado un anio, de ahi el -1."""
     p = int(p)
     return f"{(p - 1) // 12}-{(p - 1) % 12 + 1:02d}"
+
+def _nivel(df):
+    """Escala de cada fila: media de 12 meses previos, con suelo 1 para productos sin historia."""
+    if "Media_12m" not in df.columns:
+        return np.ones(len(df))
+    return np.maximum(df["Media_12m"].to_numpy(dtype=float), 1.0)
+
+def _entrenar(modelo, df, cols):
+    """Aprende la venta RELATIVA (ventas / nivel): el mismo patron estacional sirve para un
+    producto de 5 y de 500 uds, y al crecer el nivel la prediccion crece con el. Cada fila
+    pesa segun su nivel (normalizado a media 1) para no dar el mismo peso a 2 que a 200 uds."""
+    nivel = _nivel(df)
+    modelo.fit(df[cols].fillna(0), df[COL_VENTAS].to_numpy(dtype=float) / nivel,
+               sample_weight=nivel / nivel.mean())
+    return modelo
+
+def _predecir(modelo, df, cols):
+    """Prediccion relativa del modelo reescalada a unidades."""
+    return (modelo.predict(df[cols].fillna(0)) * _nivel(df)).clip(min=0)
 
 def _construir_modelo(params):
     return XGBRegressor(subsample=0.8, colsample_bytree=0.8, random_state=42,
@@ -332,8 +377,8 @@ def _rmse_validacion_temporal(df_train, cols, params, n_folds=MESES_VALIDACION):
         if mask_tr.sum() < 10 or mask_val.sum() == 0:
             continue
         modelo = _construir_modelo(params)
-        modelo.fit(df_train.loc[mask_tr, cols].fillna(0), df_train.loc[mask_tr, COL_VENTAS])
-        pred = modelo.predict(df_train.loc[mask_val, cols].fillna(0)).clip(min=0)
+        _entrenar(modelo, df_train.loc[mask_tr], cols)
+        pred = _predecir(modelo, df_train.loc[mask_val], cols)
         errores.append(np.sqrt(mean_squared_error(df_train.loc[mask_val, COL_VENTAS], pred)))
     return (float(np.mean(errores)), len(errores)) if errores else (None, 0)
 
@@ -410,9 +455,9 @@ def _backtest_walk_forward(df, cols, params, n_folds=MESES_TEST_HOLDOUT):
         if mask_tr.sum() < 10 or mask_te.sum() == 0:
             continue
         modelo = _construir_modelo(params)
-        modelo.fit(df.loc[mask_tr, cols].fillna(0), df.loc[mask_tr, COL_VENTAS])
+        _entrenar(modelo, df.loc[mask_tr], cols)
         y_real = df.loc[mask_te, COL_VENTAS].values
-        y_pred = modelo.predict(df.loc[mask_te, cols].fillna(0)).clip(min=0)
+        y_pred = _predecir(modelo, df.loc[mask_te], cols)
         y_base = _prediccion_baseline(df.loc[mask_te])
         detalle.append({
             "periodo": _fmt_periodo(p_test),
@@ -512,8 +557,8 @@ def entrenar_modelo_ml(df_features, contexto=None):
 
     # 3. Holdout: se mide una vez, sin haber influido en ninguna decision.
     modelo_holdout = _construir_modelo(mejores_params)
-    modelo_holdout.fit(df_train[cols].fillna(0), df_train[COL_VENTAS])
-    pred_holdout = modelo_holdout.predict(df_test[cols].fillna(0)).clip(min=0)
+    _entrenar(modelo_holdout, df_train, cols)
+    pred_holdout = _predecir(modelo_holdout, df_test, cols)
     met_holdout = _metricas_error(df_test[COL_VENTAS], pred_holdout)
     met_holdout["r2"] = round(float(r2_score(df_test[COL_VENTAS], pred_holdout)), 4)
     met_baseline_holdout = _metricas_error(df_test[COL_VENTAS], _prediccion_baseline(df_test))
@@ -525,7 +570,7 @@ def entrenar_modelo_ml(df_features, contexto=None):
 
     # 5. Modelo final: se reentrena con TODO, incluido el holdout ya medido.
     modelo_final = _construir_modelo(mejores_params)
-    modelo_final.fit(df[cols].fillna(0), df[COL_VENTAS])
+    _entrenar(modelo_final, df, cols)
     imp = dict(sorted(zip(cols, (float(v) for v in modelo_final.feature_importances_)),
                       key=lambda x: x[1], reverse=True))
 
@@ -551,6 +596,8 @@ def entrenar_modelo_ml(df_features, contexto=None):
         "fecha_entrenamiento": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "n_registros_historico": len(df_features),
         "validacion": "split temporal + backtest walk-forward",
+        "version_motor": VERSION_MOTOR,
+        "objetivo": "ventas relativas a la media de 12 meses",
         "hiperparametros": mejores_params,
         "ensayos_tuning": ensayos,
         "holdout": met_holdout,
@@ -568,7 +615,7 @@ def predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_p
     if "Prediccion_Base" in df_features_futuro.columns:
         predicciones = df_features_futuro["Prediccion_Base"].to_numpy(dtype=float)
     else:
-        predicciones = model.predict(df_features_futuro[_columnas_modelo(model, df_features_futuro)].fillna(0)).clip(min=0)
+        predicciones = _predecir(model, df_features_futuro, _columnas_modelo(model, df_features_futuro))
     z = Z_SCORES.get(nivel_servicio_pct, 1.645)
     rmse_global = np.mean(list(rmse_por_cn.values())) if rmse_por_cn else 1.0
     result = df_features_futuro[[COL_CN]].copy()
@@ -653,6 +700,8 @@ def cargar_modelo_farmacia():
         if any(f not in FEATURE_COLS for f in esperadas):
             return None, {"obsoleto": True}, {}
         metricas = cargar_json_farmacia("modelo_metricas.json", default={})
+        if metricas.get("version_motor") != VERSION_MOTOR:
+            return None, {"obsoleto": True}, {}
         rmse_por_cn = cargar_json_farmacia("modelo_rmse_cn.json", default={})
         return model, metricas, rmse_por_cn
     except Exception:
