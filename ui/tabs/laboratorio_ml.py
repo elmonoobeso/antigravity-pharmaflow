@@ -2,7 +2,7 @@ from ml.engine import ML_AVAILABLE
 import streamlit as st
 import pandas as pd
 from data.io import cargar_json_farmacia
-from ui.charts import grafico_backtest_folds, grafico_backtest_totales, grafico_importancia_features, grafico_residuos, grafico_timeline_split, grafico_tuning
+from ui.charts import grafico_backtest_folds, grafico_backtest_totales, grafico_importancia_features, grafico_residuos, grafico_seleccion_variables, grafico_timeline_split, grafico_tuning, grafico_walk_forward
 from ui.components import render_kpi
 
 
@@ -64,12 +64,29 @@ def modulo_laboratorio_ml():
     st.divider()
     st.markdown("#### 2. Variables que usa el modelo")
     feats = pipeline.get("features", {})
-    st.caption(f"{len(feats.get('usadas', []))} variables: estacionalidad, tendencia, venta del "
-               "mes anterior, mismo mes del ano pasado, apertura de la farmacia, perfil de la "
-               "zona, clima y promociones.")
-    fig_imp = grafico_importancia_features({"importance": feats.get("importancia", {})})
-    if fig_imp:
-        st.plotly_chart(fig_imp, width="stretch", key="lab_importancia")
+    sel = feats.get("seleccion", {})
+    st.caption(f"{len(feats.get('usadas', []))} variables en el modelo final. La seleccion es automatica y por "
+               "grupos: se reentrena quitando cada grupo y solo se queda si quitarlo empeora el error. Se decide "
+               "con meses de entrenamiento; el holdout no participa.")
+    cs1, cs2 = st.columns(2)
+    with cs1:
+        fig_sel = grafico_seleccion_variables(sel)
+        if fig_sel:
+            st.plotly_chart(fig_sel, width="stretch", key="lab_seleccion")
+    with cs2:
+        fig_imp = grafico_importancia_features({"importance": feats.get("importancia", {})})
+        if fig_imp:
+            st.plotly_chart(fig_imp, width="stretch", key="lab_importancia")
+    if sel.get("grupos"):
+        st.dataframe(pd.DataFrame([{
+            "Grupo": g["grupo"], "Variables": ", ".join(g["variables"]),
+            "Error sin el grupo": g["rmse_sin_grupo"], "Impacto al quitarlo (%)": g["impacto_pct"],
+            "Decision": g["decision"],
+        } for g in sel["grupos"]]), width="stretch", hide_index=True)
+        st.caption(f"RMSE de validacion con todas las variables: {sel.get('rmse_todas')} · "
+                   f"con las elegidas: {sel.get('rmse_elegidas')}")
+        if sel.get("nota"):
+            st.info(sel["nota"])
 
     # --- 3. Split temporal ---
     st.divider()
@@ -100,6 +117,9 @@ def modulo_laboratorio_ml():
     st.caption("Se reentrena mes a mes y se predice el mes siguiente, replicando lo que pasaria "
                "en uso real. Es la medida en la que mas se puede confiar.")
     folds = bt.get("folds", [])
+    fig_wf = grafico_walk_forward(pipeline)
+    if fig_wf:
+        st.plotly_chart(fig_wf, width="stretch", key="lab_walk_forward")
     if folds:
         df_folds = pd.DataFrame([{
             "Mes predicho": f["periodo"],

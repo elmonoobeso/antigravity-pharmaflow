@@ -124,7 +124,7 @@ def modulo_configuracion():
     # --- E. Perfil de la Farmacia (3 epis) ---
     st.divider()
     st.markdown("#### E. Perfil de la Farmacia")
-    st.caption("Configura una vez. Afecta a las predicciones ML.")
+    st.caption("Configura una vez. Informativo: el modelo de cada farmacia no lo usa porque es un valor fijo en todo su historico.")
     perfil = cargar_perfil_farmacia()
     c1, c2 = st.columns(2)
     with c1:

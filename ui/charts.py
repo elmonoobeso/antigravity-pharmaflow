@@ -351,24 +351,71 @@ def grafico_roi_laboratorios(df_roi, top_n=15):
 # ===========================================================================
 # LABORATORIO ML — visualizacion de cada fase del pipeline
 # ===========================================================================
+def _mes_a_fecha(periodo):
+    return pd.Timestamp(f"{periodo}-01")
+
 def grafico_timeline_split(pipeline):
-    """Linea de tiempo del historico: que meses entrenan y cuales solo miden."""
-    datos = pipeline.get("datos", {})
-    split = pipeline.get("split", {})
-    if not datos.get("desde") or not split.get("periodo_corte"):
+    """Ventas reales por mes con las zonas de entrenamiento y holdout y las predicciones del backtest."""
+    serie = pipeline.get("datos", {}).get("serie_mensual", [])
+    corte = pipeline.get("split", {}).get("periodo_corte")
+    if not serie or not corte:
         return None
-    meses_holdout = split.get("meses_holdout", 3)
-    n_total = datos.get("n_periodos", 0)
-    n_train = max(0, n_total - meses_holdout)
+    fechas = [_mes_a_fecha(x["periodo"]) for x in serie]
+    fin = fechas[-1] + pd.offsets.MonthBegin(1)
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=[n_train], y=["Historico"], orientation="h", name="Entrenamiento",
-                         marker_color=COLORS["primary"], text=f"{n_train} meses", textposition="inside"))
-    fig.add_trace(go.Bar(x=[meses_holdout], y=["Historico"], orientation="h", name="Holdout (solo medir)",
-                         marker_color=COLORS["warning"], text=f"{meses_holdout} meses", textposition="inside"))
-    fig.update_layout(barmode="stack", height=150, margin=dict(l=10, r=10, t=30, b=10),
-                      paper_bgcolor="white", plot_bgcolor="white", font={"family": "Inter"},
-                      xaxis=dict(title=f"{datos.get('desde')} → {datos.get('hasta')}", gridcolor="#E2E8F0"),
-                      yaxis=dict(title=""), legend=dict(orientation="h", y=-0.4))
+    fig.add_vrect(x0=fechas[0], x1=_mes_a_fecha(corte), fillcolor=COLORS["primary"], opacity=0.07, line_width=0,
+                  annotation_text="Entrenamiento", annotation_position="top left")
+    fig.add_vrect(x0=_mes_a_fecha(corte), x1=fin, fillcolor=COLORS["warning"], opacity=0.18, line_width=0,
+                  annotation_text="Holdout (solo medir)", annotation_position="top right")
+    fig.add_trace(go.Scatter(x=fechas, y=[x["real"] for x in serie], mode="lines+markers", name="Ventas reales",
+                             line=dict(color=COLORS["text"], width=2), marker=dict(size=4)))
+    folds = pipeline.get("backtest", {}).get("folds", [])
+    if folds:
+        xf = [_mes_a_fecha(f["periodo"]) for f in folds]
+        fig.add_trace(go.Scatter(x=xf, y=[f["total_ml"] for f in folds], mode="lines+markers", name="Prediccion ML",
+                                 line=dict(color=COLORS["primary"], width=2, dash="dot"), marker=dict(size=8)))
+        fig.add_trace(go.Scatter(x=xf, y=[f["total_baseline"] for f in folds], mode="lines+markers",
+                                 name="Baseline (mismo mes ano anterior)",
+                                 line=dict(color=COLORS["warning"], width=2, dash="dash"), marker=dict(size=8, symbol="diamond")))
+    fig.update_layout(height=340, margin=dict(l=10, r=10, t=40, b=10), paper_bgcolor="white", plot_bgcolor="white",
+                      font={"family": "Inter"}, yaxis=dict(title="Unidades vendidas (total farmacia)", gridcolor="#E2E8F0"),
+                      xaxis=dict(gridcolor="#E2E8F0"), legend=dict(orientation="h", y=-0.15), hovermode="x unified")
+    return fig
+
+def grafico_walk_forward(pipeline):
+    """Cada paso del backtest: meses con los que entrena y mes que predice."""
+    folds = pipeline.get("backtest", {}).get("folds", [])
+    desde = pipeline.get("datos", {}).get("desde")
+    if not folds or not desde:
+        return None
+    filas = []
+    for f in folds:
+        paso = f"Predice {f['periodo']}  (ML {f['ml']['rmse']} / Base {f['baseline']['rmse']})"
+        ini_test = _mes_a_fecha(f["periodo"])
+        filas.append({"Paso": paso, "Fase": "Entrena", "Inicio": _mes_a_fecha(f.get("train_desde", desde)), "Fin": ini_test})
+        filas.append({"Paso": paso, "Fase": "Predice", "Inicio": ini_test, "Fin": ini_test + pd.offsets.MonthBegin(1)})
+    fig = px.timeline(pd.DataFrame(filas), x_start="Inicio", x_end="Fin", y="Paso", color="Fase",
+                      color_discrete_map={"Entrena": COLORS["primary"], "Predice": COLORS["warning"]})
+    fig.update_yaxes(autorange="reversed", title="")
+    fig.update_layout(height=120 + 45 * len(folds), margin=dict(l=10, r=10, t=30, b=10), paper_bgcolor="white",
+                      plot_bgcolor="white", font={"family": "Inter"}, legend=dict(orientation="h", y=-0.25, title=""),
+                      xaxis=dict(gridcolor="#E2E8F0"))
+    return fig
+
+def grafico_seleccion_variables(seleccion):
+    """Cuanto empeora el error de validacion al quitar cada grupo de variables."""
+    grupos = (seleccion or {}).get("grupos", [])
+    if not grupos:
+        return None
+    g = sorted(grupos, key=lambda x: x["impacto_pct"])
+    color = {"obligatorio": COLORS["muted"], "se mantiene": COLORS["success"], "se descarta": COLORS["danger"]}
+    fig = go.Figure(go.Bar(x=[x["impacto_pct"] for x in g], y=[x["grupo"] for x in g], orientation="h",
+                           marker_color=[color.get(x["decision"], COLORS["primary"]) for x in g],
+                           text=[f"{x['impacto_pct']:+.1f}% · {x['decision']}" for x in g], textposition="auto"))
+    fig.add_vline(x=0, line_color=COLORS["text"], line_width=1)
+    fig.update_layout(title={"text": "Error al quitar cada grupo (+ = el grupo ayuda)", "font": {"size": 14}},
+                      height=110 + 40 * len(g), margin=dict(l=10, r=10, t=40, b=10), paper_bgcolor="white",
+                      plot_bgcolor="white", font={"family": "Inter"}, xaxis=dict(title="% de empeoramiento del RMSE", gridcolor="#E2E8F0"))
     return fig
 
 def grafico_tuning(ensayos, elegidos):

@@ -31,16 +31,19 @@ TEMP_CLIMATICA = {
     "atlantico":    [9.0,  9.5,  11.5, 12.5, 15.0, 18.0, 20.5, 20.8, 19.0, 15.5, 12.0, 9.8],
 }
 
-FEATURE_COLS = [
-    "Base_Mirroring", "Growth_Factor", "Lag_30",
-    "Pct_Zona_Cobro", "Es_Paga_Extra",
-    "Horas_Abierto", "Dias_Abiertos",
-    "Epi_Gripe", "Epi_Alergias", "Epi_Covid",
-    "Perfil_centro_salud", "Perfil_residencia", "Perfil_colegio",
-    "Perfil_zona_turistica", "Perfil_zona_rural",
-    "Mes_Num", "Was_Promo", "Is_Future_Promo",
-    "ATC_Encoded", "Temp_Media", "Temp_Desviacion",
-]
+# Variables agrupadas por fuente. La seleccion automatica decide por farmacia que
+# grupos se quedan; una fuente nueva (p.ej. incidencia de gripe semanal) se anade
+# registrando aqui su grupo. Perfil y nivel epidemiologico manual no estan: son un
+# valor fijo en todo el historico de la farmacia y el modelo no puede aprender de ellos.
+GRUPO_BASE = "Historia de ventas"
+GRUPOS_FEATURES = {
+    GRUPO_BASE: ["Base_Mirroring", "Lag_30", "Growth_Factor"],
+    "Calendario": ["Mes_Num", "Pct_Zona_Cobro", "Es_Paga_Extra", "Horas_Abierto", "Dias_Abiertos"],
+    "Clima": ["Temp_Media", "Temp_Desviacion"],
+    "Grupo terapeutico": ["ATC_Encoded"],
+    "Promociones": ["Was_Promo", "Is_Future_Promo"],
+}
+FEATURE_COLS = [c for cols in GRUPOS_FEATURES.values() for c in cols]
 
 # Meses reservados como holdout final. No se usan ni para entrenar ni para
 # elegir hiperparametros: solo para medir.
@@ -113,6 +116,13 @@ def _codificar_atc_sin_fuga(mensual):
 
 MIN_MESES_COLD_START = 6
 MESES_DESFASE_AVISO = 2
+
+def _columnas_modelo(model, df):
+    """Variables con las que se entreno el modelo (la seleccion puede haber quitado grupos)."""
+    nombres = getattr(model, "feature_names_in_", None)
+    if nombres is not None:
+        return list(nombres)
+    return [c for c in FEATURE_COLS if c in df.columns]
 
 def _agregar_mensual(df_ventas):
     """Historico de ventas -> una fila por producto y mes (Anio, Mes, Ventas)."""
@@ -255,7 +265,7 @@ def construir_features_futuras(model, df_ventas, df_inventario, perfil, calendar
                             ignore_index=True)
         feats = _features_desde_mensual(mensual, df_inventario, perfil, calendario, df_ofertas_norm)
         filas = feats[(feats["Anio"] == anio) & (feats["Mes"] == mes)].copy()
-        pred = model.predict(filas[[c for c in FEATURE_COLS if c in filas.columns]].fillna(0)).clip(min=0)
+        pred = model.predict(filas[_columnas_modelo(model, filas)].fillna(0)).clip(min=0)
         nuevo = (filas[COL_CN].map(n_meses).fillna(0) < MIN_MESES_COLD_START) & filas[COL_CN].map(proxy).notna()
         filas["Prediccion_Base"] = np.where(nuevo, 0.5 * pred + 0.5 * filas[COL_CN].map(proxy).fillna(0), pred)
         mask = (mensual["Anio"] == anio) & (mensual["Mes"] == mes)
@@ -311,33 +321,79 @@ def _prediccion_baseline(df_fold):
     lag = df_fold["Lag_30"].astype(float) if "Lag_30" in df_fold.columns else pd.Series(0.0, index=df_fold.index)
     return mirror.where(mirror > 0, lag).values
 
+def _rmse_validacion_temporal(df_train, cols, params, n_folds=MESES_VALIDACION):
+    """RMSE medio prediciendo los ultimos meses del train, cada uno entrenando solo con los anteriores."""
+    periodos = sorted(_periodos(df_train).unique())
+    folds = periodos[-n_folds:] if len(periodos) > n_folds + 2 else periodos[-1:]
+    errores = []
+    for p_val in folds:
+        mask_tr = _periodos(df_train) < p_val
+        mask_val = _periodos(df_train) == p_val
+        if mask_tr.sum() < 10 or mask_val.sum() == 0:
+            continue
+        modelo = _construir_modelo(params)
+        modelo.fit(df_train.loc[mask_tr, cols].fillna(0), df_train.loc[mask_tr, COL_VENTAS])
+        pred = modelo.predict(df_train.loc[mask_val, cols].fillna(0)).clip(min=0)
+        errores.append(np.sqrt(mean_squared_error(df_train.loc[mask_val, COL_VENTAS], pred)))
+    return (float(np.mean(errores)), len(errores)) if errores else (None, 0)
+
 def _ajustar_hiperparametros(df_train, cols, n_folds=MESES_VALIDACION):
     """Elige hiperparametros con validacion temporal DENTRO del periodo de train.
 
     El holdout final no participa: si se eligiera la configuracion mirando el
     test, el test dejaria de ser una medida honesta.
     """
-    periodos = sorted(_periodos(df_train).unique())
-    folds = periodos[-n_folds:] if len(periodos) > n_folds + 2 else periodos[-1:]
     ensayos = []
     for params in REJILLA_HIPERPARAMETROS:
-        errores = []
-        for p_val in folds:
-            mask_tr = _periodos(df_train) < p_val
-            mask_val = _periodos(df_train) == p_val
-            if mask_tr.sum() < 10 or mask_val.sum() == 0:
-                continue
-            modelo = _construir_modelo(params)
-            modelo.fit(df_train.loc[mask_tr, cols].fillna(0), df_train.loc[mask_tr, COL_VENTAS])
-            pred = modelo.predict(df_train.loc[mask_val, cols].fillna(0)).clip(min=0)
-            errores.append(np.sqrt(mean_squared_error(df_train.loc[mask_val, COL_VENTAS], pred)))
-        if errores:
-            ensayos.append({"params": params, "rmse_validacion": round(float(np.mean(errores)), 3),
-                            "n_folds": len(errores)})
+        rmse, n = _rmse_validacion_temporal(df_train, cols, params, n_folds)
+        if rmse is not None:
+            ensayos.append({"params": params, "rmse_validacion": round(rmse, 3), "n_folds": n})
     if not ensayos:
         return REJILLA_HIPERPARAMETROS[1], []
     ensayos.sort(key=lambda e: e["rmse_validacion"])
     return ensayos[0]["params"], ensayos
+
+def _seleccionar_grupos(df_train, params):
+    """Seleccion hacia atras por grupos, con la misma validacion temporal del train.
+
+    Se reentrena quitando cada grupo: si el error de validacion no empeora, el grupo
+    se descarta (a igualdad, el modelo mas simple). La historia de ventas es
+    obligatoria. El holdout no participa en la decision.
+    """
+    disponibles = {g: [c for c in vs if c in df_train.columns] for g, vs in GRUPOS_FEATURES.items()}
+    todas = [c for vs in disponibles.values() for c in vs]
+    rmse_todas, _ = _rmse_validacion_temporal(df_train, todas, params)
+    if rmse_todas is None or rmse_todas <= 0:
+        return todas, {}
+    grupos, descartados = [], []
+    for grupo, vs in disponibles.items():
+        if not vs:
+            continue
+        rmse_sin, _ = _rmse_validacion_temporal(df_train, [c for c in todas if c not in vs], params)
+        if rmse_sin is None:
+            continue
+        impacto = (rmse_sin - rmse_todas) / rmse_todas * 100
+        if grupo == GRUPO_BASE:
+            decision = "obligatorio"
+        elif impacto > 0:
+            decision = "se mantiene"
+        else:
+            decision = "se descarta"
+            descartados.append(grupo)
+        grupos.append({"grupo": grupo, "variables": vs, "rmse_sin_grupo": round(rmse_sin, 3),
+                       "impacto_pct": round(impacto, 2), "decision": decision})
+    elegidas = [c for g, vs in disponibles.items() if g not in descartados for c in vs]
+    rmse_elegidas, _ = _rmse_validacion_temporal(df_train, elegidas, params)
+    nota = None
+    if rmse_elegidas is not None and rmse_elegidas > rmse_todas:
+        # Quitar varios grupos a la vez puede empeorar aunque cada uno por separado no lo haga.
+        elegidas, rmse_elegidas = todas, rmse_todas
+        nota = "Quitar a la vez los grupos descartados empeoraba el error: se mantienen todas las variables."
+        for g in grupos:
+            if g["decision"] == "se descarta":
+                g["decision"] = "se mantiene"
+    return elegidas, {"rmse_todas": round(rmse_todas, 3), "rmse_elegidas": round(rmse_elegidas, 3),
+                      "grupos": grupos, "nota": nota}
 
 def _backtest_walk_forward(df, cols, params, n_folds=MESES_TEST_HOLDOUT):
     """Reentrena avanzando mes a mes y predice el siguiente, como en produccion.
@@ -360,6 +416,8 @@ def _backtest_walk_forward(df, cols, params, n_folds=MESES_TEST_HOLDOUT):
         y_base = _prediccion_baseline(df.loc[mask_te])
         detalle.append({
             "periodo": _fmt_periodo(p_test),
+            "train_desde": _fmt_periodo(periodos[0]),
+            "train_hasta": _fmt_periodo(p_test - 1),
             "n_train": int(mask_tr.sum()),
             "ml": _metricas_error(y_real, y_pred),
             "baseline": _metricas_error(y_real, y_base),
@@ -412,6 +470,8 @@ def entrenar_modelo_ml(df_features):
 
     # 2. Hiperparametros por validacion temporal, solo con datos de train.
     mejores_params, ensayos = _ajustar_hiperparametros(df_train, cols)
+    # 2b. Seleccion automatica de grupos de variables, tambien solo con train.
+    cols, seleccion = _seleccionar_grupos(df_train, mejores_params)
 
     # 3. Holdout: se mide una vez, sin haber influido en ninguna decision.
     modelo_holdout = _construir_modelo(mejores_params)
@@ -448,7 +508,7 @@ def entrenar_modelo_ml(df_features):
         "rmse": backtest["ml"].get("rmse", met_holdout["rmse"]),
         "r2": met_holdout["r2"],
         "n_train": int(len(df_train)), "n_test": int(len(df_test)),
-        "features": cols, "importance": imp,
+        "features": cols, "importance": imp, "seleccion_variables": seleccion,
         "fecha_entrenamiento": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "n_registros_historico": len(df_features),
         "validacion": "split temporal + backtest walk-forward",
@@ -465,11 +525,10 @@ def entrenar_modelo_ml(df_features):
     return modelo_final, metricas, rmse_por_cn
 
 def predecir_demanda_ml(model, df_features_futuro, rmse_por_cn, nivel_servicio_pct=95):
-    cols_disponibles = [c for c in FEATURE_COLS if c in df_features_futuro.columns]
     if "Prediccion_Base" in df_features_futuro.columns:
         predicciones = df_features_futuro["Prediccion_Base"].to_numpy(dtype=float)
     else:
-        predicciones = model.predict(df_features_futuro[cols_disponibles].fillna(0)).clip(min=0)
+        predicciones = model.predict(df_features_futuro[_columnas_modelo(model, df_features_futuro)].fillna(0)).clip(min=0)
     z = Z_SCORES.get(nivel_servicio_pct, 1.645)
     rmse_global = np.mean(list(rmse_por_cn.values())) if rmse_por_cn else 1.0
     result = df_features_futuro[[COL_CN]].copy()
@@ -495,10 +554,15 @@ def construir_artefacto_pipeline(df_features, metricas):
             "n_periodos": len(periodos),
             "desde": _fmt_periodo(periodos[0]) if periodos else None,
             "hasta": _fmt_periodo(periodos[-1]) if periodos else None,
+            "serie_mensual": [
+                {"periodo": _fmt_periodo(pp), "real": round(float(v), 1)}
+                for pp, v in df_features.groupby(_periodos(df_features))[COL_VENTAS].sum().items()
+            ] if periodos else [],
         },
         "features": {
             "usadas": metricas.get("features", []),
             "importancia": metricas.get("importance", {}),
+            "seleccion": metricas.get("seleccion_variables", {}),
         },
         "split": {
             "estrategia": "temporal (los ultimos meses nunca se usan para ajustar)",
